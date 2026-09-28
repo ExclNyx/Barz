@@ -80,13 +80,14 @@ ob_start();
 
         <hr class="divider">
 
-        <div class="demo-box">
-            <strong>Demo Account:</strong>
-            <ul>
-                <li>Super Admin: admin@barz.com / barz2024</li>
-                <li>Customer: Daftar baru atau gunakan email sendiri</li>
-            </ul>
-        </div>
+                <div class="demo-box">
+                    <strong>Demo Account:</strong>
+                    <ul>
+                        <li>Super Admin: superadmin@barz.com / superadmin</li>
+                        <li>Admin: admin@barz.com / barz2024</li>
+                        <li>Customer: Daftar baru atau gunakan email sendiri</li>
+                    </ul>
+                </div>
 
     </div>
 </div>
