@@ -136,3 +136,27 @@ dialog.modal::backdrop{background:rgba(0,0,0,.45)}
   .page-top h1{font-size:1.4rem}
   .chatgrid{grid-template-columns:1fr}
 }
+
+/* Chat styles (mirip customer) */
+.chat-shell{background:#fff;border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--sh);display:flex;flex-direction:column;overflow:hidden}
+.chat-head{background:rgba(249,247,242,.7);border-bottom:1px solid var(--line);padding:14px 18px;display:flex;align-items:center;gap:12px}
+.chat-head strong{display:block;font-size:.9rem}
+.chat-head small{color:var(--muted);font-size:.78rem}
+.chat-log{padding:20px;overflow-y:auto;flex:1;background:rgba(249,247,242,.5);min-height:300px;max-height:52vh}
+.msgcol{display:flex;flex-direction:column;gap:14px}
+.msg{display:flex;flex-direction:column;max-width:80%}
+.msg.sent{align-self:flex-end}
+.msg.in{align-self:flex-start}
+.bubble{padding:10px 16px;border-radius:var(--r-card);font-size:.9rem;box-shadow:var(--sh)}
+.msg.sent .bubble{background:var(--accent);color:#fff;border-top-right-radius:4px}
+.msg.in .bubble{background:#fff;border:1px solid var(--line);border-top-left-radius:4px}
+.bubble .who{display:block;font-size:.72rem;font-weight:700;margin-bottom:4px;color:var(--ink)}
+.msg-time{font-size:.68rem;color:var(--muted);margin-top:4px;text-align:right}
+.msg.in .msg-time{text-align:left}
+.chat-form{padding:14px;border-top:1px solid var(--line);background:#fff;display:flex;gap:8px}
+.chat-form .input{border-radius:12px;flex:1}
+.sendbtn{width:46px;flex:none;border:0;border-radius:12px;background:var(--accent);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sendbtn:hover{background:var(--accent-hi)}
+.sendbtn svg.ic{width:18px;height:18px}
+.chat-empty{text-align:center;color:var(--muted);padding:40px 0}
+.chat-empty svg.ic{width:36px;height:36px;margin-bottom:8px}
