@@ -101,21 +101,28 @@ function getBarbers($activeOnly = true) {
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
-function isSlotBooked($date, $startTime, $endTime, $barberId) {
+function isSlotBooked($date, $startTime, $endTime, $barberId = null) {
     $db = getDB();
 
-    $stmt = $db->prepare("SELECT COUNT(*) as count FROM bookings b
-        JOIN time_slots ts ON b.booking_date = ts.date
-            AND b.barber_id = ts.barber_id
-            AND b.start_time < ts.end_time
-            AND b.end_time > ts.start_time
-        WHERE ts.date = ?
-            AND ts.barber_id = ?
-            AND ts.is_available = 1
-            AND b.status NOT IN ('cancelled', 'no_show')
-            AND b.start_time < ?
-            AND b.end_time > ?");
-    $stmt->bind_param("ssis", $date, $barberId, $endTime, $startTime);
+    if ($barberId) {
+        // Specific barber check
+        $stmt = $db->prepare("SELECT COUNT(*) as count FROM bookings
+            WHERE booking_date = ?
+                AND barber_id = ?
+                AND status NOT IN ('cancelled', 'no_show')
+                AND start_time < ?
+                AND end_time > ?");
+        $stmt->bind_param("siss", $date, $barberId, $endTime, $startTime);
+    } else {
+        // Any barber - check if ALL barbers are booked for this slot
+        $stmt = $db->prepare("SELECT COUNT(DISTINCT b.barber_id) as count FROM bookings b
+            WHERE b.booking_date = ?
+                AND b.status NOT IN ('cancelled', 'no_show')
+                AND b.barber_id IS NOT NULL
+                AND b.start_time < ?
+                AND b.end_time > ?");
+        $stmt->bind_param("sss", $date, $endTime, $startTime);
+    }
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -132,6 +139,7 @@ function getAvailableSlots($date, $serviceId, $barberId = null) {
     $stmt->execute();
     $result = $stmt->get_result();
     $service = $result->fetch_assoc();
+    if (!$service) return [];
     $duration = $service['duration']; // in minutes
 
     // Get closing time
@@ -147,6 +155,7 @@ function getAvailableSlots($date, $serviceId, $barberId = null) {
         $stmt->bind_param("si", $date, $barberId);
     } else {
         // Get distinct time slots across all barbers for this date
+        // Show slot if AT LEAST ONE barber has it available
         $sql = "SELECT ts.start_time, ts.end_time, MAX(ts.is_available) as is_available
                 FROM time_slots ts
                 WHERE ts.date = ? AND ts.is_available = 1
