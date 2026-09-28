@@ -1,30 +1,45 @@
 <?php
-// Router storefront. Admin/superadmin/API pakai includes/init.php langsung.
+// Root router: arahkan ke area yang benar
 require_once __DIR__ . '/includes/init.php';
 
+$area = $_GET['area'] ?? 'customer';
 $page = $_GET['page'] ?? 'home';
-$baseDir = __DIR__;
 
-switch ($page) {
-    case 'home':
-    case 'services':
-    case 'booking':
-    case 'my-bookings':
-    case 'chat':
-        include $baseDir . '/pages/' . $page . '.php';
+switch ($area) {
+    case 'customer':
+        include __DIR__ . '/customer/index.php';
         break;
 
     case 'admin':
-        include $baseDir . '/admin/index.php';
+        if (!isAdmin() && !isSuperAdmin()) {
+            header('Location: /Barz/index.php?area=customer&page=login');
+            exit;
+        }
+        include __DIR__ . '/admin/index.php';
         break;
 
-    case 'login':
-    case 'register':
-        include $baseDir . '/auth/' . $page . '.php';
+    case 'superadmin':
+        if (!isSuperAdmin()) {
+            header('Location: /Barz/index.php?area=customer&page=home');
+            exit;
+        }
+        include __DIR__ . '/superadmin/index.php';
+        break;
+
+    case 'api':
+        include __DIR__ . '/api/' . $page . '.php';
+        break;
+
+    case 'auth':
+        include __DIR__ . '/auth/' . $page . '.php';
+        break;
+
+    case 'generate':
+        include __DIR__ . '/generate_slots.php';
         break;
 
     default:
         http_response_code(404);
-        echo "Page not found";
+        echo "Area not found";
         break;
 }

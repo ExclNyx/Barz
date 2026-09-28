@@ -2,7 +2,7 @@
 $pageTitle = 'Login - Barz Barbershop';
 
 if (isLoggedIn()) {
-    redirect('home');
+    redirect('home', 'customer');
 }
 
 $error = '';
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: /Barz/superadmin/index.php');
                 exit;
             }
-            redirect($user['role'] === 'admin' ? 'admin' : 'home');
+            redirect($user['role'] === 'admin' ? 'admin' : 'home', $user['role'] === 'admin' ? 'admin' : 'customer');
         } else {
             $error = 'Email atau password salah';
         }
@@ -72,10 +72,10 @@ ob_start();
             </button>
 
             <div class="center" style="margin-top:20px">
-                <p class="hint">
-                    Belum punya akun? <a href="/Barz/index.php?page=register" class="tlink">Daftar di sini</a>
-                </p>
-            </div>
+                            <p class="hint">
+                                Belum punya akun? <a href="/Barz/index.php?area=auth&page=register" class="tlink">Daftar di sini</a>
+                            </p>
+                        </div>
         </form>
 
         <hr class="divider">
@@ -93,5 +93,5 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../includes/layout.php';
+include __DIR__ . '/../customer/layout.php';
 ?>

@@ -2,7 +2,7 @@
 $pageTitle = 'Register - Barz Barbershop';
 
 if (isLoggedIn()) {
-    redirect('home');
+    redirect('home', 'customer');
 }
 
 $error = '';
@@ -105,8 +105,8 @@ ob_start();
 
             <div class="center" style="margin-top:20px">
                 <p class="hint">
-                    Sudah punya akun? <a href="/Barz/index.php?page=login" class="tlink">Login di sini</a>
-                </p>
+                                    Sudah punya akun? <a href="/Barz/index.php?area=auth&page=login" class="tlink">Login di sini</a>
+                                </p>
             </div>
         </form>
 
@@ -116,5 +116,5 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../includes/layout.php';
+include __DIR__ . '/../customer/layout.php';
 ?>

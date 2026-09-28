@@ -188,19 +188,19 @@ function getAvailableSlots($date, $serviceId, $barberId = null) {
 function isSlotAvailable($date, $startTime, $endTime, $barberId = null) {
     $db = getDB();
 
-    // Check time_slots for is_available and no overlapping active booking
     $sql = "SELECT COUNT(*) as count FROM time_slots ts
             WHERE ts.date = ?
             AND ts.is_available = 1
             AND ts.start_time < ?
             AND ts.end_time > ?";
-    $types = "ssi";
+
     $params = [$date, $endTime, $startTime];
+    $types = "sss";
 
     if ($barberId) {
         $sql .= " AND ts.barber_id = ?";
-        $types = "sssi";
         $params[] = $barberId;
+        $types .= "i";
     }
 
     $sql .= " AND NOT EXISTS (
@@ -211,15 +211,11 @@ function isSlotAvailable($date, $startTime, $endTime, $barberId = null) {
         AND b.start_time < ?
         AND b.end_time > ?
     )";
-    $types .= "sss";
     $params = array_merge($params, [$date, $endTime, $startTime]);
+    $types .= "sss";
 
-    // Use Reflection to bind params by reference
     $stmt = $db->prepare($sql);
-    $bindArgs = array_merge([$types], $params);
-    $ref = new ReflectionMethod($stmt, 'bind_param');
-    $ref->invokeArgs($stmt, $bindArgs);
-
+    $stmt->bind_param($types, ...$params);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
@@ -290,7 +286,7 @@ function getStatusBadge($status) {
     return $badges[$status] ?? $status;
 }
 
-function redirect($page) {
-    header("Location: /Barz/index.php?page=$page");
+function redirect($page, $area = 'customer') {
+    header("Location: /Barz/index.php?area=$area&page=$page");
     exit;
 }

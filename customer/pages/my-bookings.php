@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_booking'])) {
     $stmt->bind_param("ii", $bookingId, $_SESSION['user_id']);
     if ($stmt->execute()) {
         $_SESSION['success'] = 'Booking berhasil dibatalkan';
-        redirect('my-bookings');
+        redirect('my-bookings', 'customer');
     }
 }
 
@@ -123,5 +123,5 @@ $statusLabel = [
 
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../includes/layout.php';
+include __DIR__ . '/../../customer/layout.php';
 ?>

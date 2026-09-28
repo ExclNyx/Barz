@@ -149,5 +149,5 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../includes/layout.php';
+include __DIR__ . '/../../customer/layout.php';
 ?>

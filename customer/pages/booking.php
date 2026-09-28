@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($bookingId) {
             $_SESSION['success'] = 'Booking berhasil dibuat! Menunggu konfirmasi admin.';
-            redirect('my-bookings');
+            redirect('my-bookings', 'customer');
         } else {
             $error = 'Gagal membuat booking. Silakan coba lagi.';
         }
@@ -256,5 +256,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <?php
 $content = ob_get_clean();
-include __DIR__ . '/../includes/layout.php';
+include __DIR__ . '/../../customer/layout.php';
 ?>
