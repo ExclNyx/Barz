@@ -1,0 +1,59 @@
+# Barz Barbershop - .gitignore
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment & Config
+.env
+.env.local
+.env.*.local
+includes/init.php.local
+
+# Logs
+*.log
+/error_log
+/php_errors.log
+/apache/logs/*.log
+
+# Database
+*.sql
+/database/*.sql
+!/database/schema.sql
+
+# IDE & Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS & Temporary
+*.tmp
+*.temp
+*.bak
+.cache/
+
+# Uploads & Storage (if any)
+/storage/
+/public/uploads/
+/assets/uploads/
+
+# Build & Dist (if using Vite/Webpack later)
+/dist/
+/build/
+/public/assets/*.min.css
+/public/assets/*.min.js
+
+# Composer
+composer.phar
+composer.lock
+
+# Testing & Coverage
+/coverage/
+/.phpunit.result.cache
+
+# Misc
+*.pid
+*.lock
