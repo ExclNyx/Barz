@@ -51,46 +51,7 @@ ob_start();
     </div>
 </section>
 
-<section class="section wrap">
-    <div class="sec-head left">
-        <h2 class="sec-title">Kenapa Barz?</h2>
-        <p>Alasan kamu harus potong rambut di sini.</p>
-    </div>
-    <div class="feat3">
-        <div class="feat">
-            <div class="feat-ic">
-                <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            </div>
-            <h3>Tanpa Antri</h3>
-            <p>Booking sesuai waktumu, datang langsung duduk di kursi potong.</p>
-        </div>
-        <div class="feat">
-            <div class="feat-ic">
-                <svg class="ic" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
-            </div>
-            <h3>Barber Ahli</h3>
-            <p>Ditangani oleh kapster berpengalaman dengan berbagai macam gaya potongan.</p>
-        </div>
-        <div class="feat">
-            <div class="feat-ic">
-                <svg class="ic" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-            </div>
-            <h3>Harga Pasti</h3>
-            <p>Harga transparan sejak awal booking. Bebas dari biaya tersembunyi.</p>
-        </div>
-    </div>
-</section>
 
-<section class="section wrap">
-    <div class="cta-band">
-        <h2>Siap Tampil Beda?</h2>
-        <p>Booking sekarang dan rasakan pengalaman potong rambut yang berbeda.</p>
-        <div class="cta-row">
-            <a href="/Barz/index.php?page=booking" class="button button-primary">Booking Sekarang</a>
-            <a href="/Barz/index.php?page=services" class="button button-outline">Lihat Layanan</a>
-        </div>
-    </div>
-</section>
 
 <section class="marquee-section">
     <div class="wrap center" style="margin-bottom:24px">
