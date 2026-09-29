@@ -11,7 +11,8 @@ switch ($area) {
         break;
 
     case 'admin':
-        if (!isAdmin() && !isSuperAdmin()) {
+        // Only admin (not super_admin) can access admin area
+        if (!isAdmin() || isSuperAdmin()) {
             header('Location: /Barz/index.php?area=customer&page=login');
             exit;
         }
