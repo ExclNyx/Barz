@@ -43,7 +43,7 @@ if ($chatId) {
 ?>
 <div class="page">
     <div class="page-top">
-        <a href="/Barz/admin/chats.php" class="btn btn-s btn-o" style="margin-right:12px">
+        <a href="/Barz/admin/chats.php" class="btn btn-s btn-o mr-3">
             <svg class="ic" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Kembali
         </a>
         <h1>Chat: <?php echo htmlspecialchars($chat['customer_name']); ?></h1>
@@ -53,7 +53,7 @@ if ($chatId) {
         <div class="notice"><?php echo $_SESSION['success']; unset($_SESSION['success']); ?></div>
     <?php endif; ?>
 
-    <div class="chat-shell" style="max-width:800px">
+    <div class="chat-shell max-w-[800px]">
         <div class="chat-head">
             <div class="avatar" aria-hidden="true">
                 <svg class="ic" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>

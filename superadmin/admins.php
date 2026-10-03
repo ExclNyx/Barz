@@ -77,7 +77,7 @@ ob_start();
                 <td><?php echo $a['role'] === 'super_admin' ? '<span class="tag tag-confirmed">Super Admin</span>' : '<span class="tag tag-pending">Admin</span>'; ?></td>
                 <td>
                     <?php if ($a['id'] != $_SESSION['user_id'] && $a['role'] !== 'super_admin'): ?>
-                    <form method="POST" style="display:inline" onsubmit="return confirm('Yakin hapus admin ini?')">
+                    <form method="POST" class="inline" onsubmit="return confirm('Yakin hapus admin ini?')">
                         <input type="hidden" name="user_id" value="<?php echo $a['id']; ?>">
                         <button type="submit" name="delete_admin" class="btn btn-s btn-d" aria-label="Hapus admin">
                             <svg class="ic" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>

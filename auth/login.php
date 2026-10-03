@@ -71,7 +71,7 @@ ob_start();
                 <svg class="ic" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
 
-            <div class="center" style="margin-top:20px">
+            <div class="center mt-5">
                             <p class="hint">
                                 Belum punya akun? <a href="/Barz/index.php?area=auth&page=register" class="tlink">Daftar di sini</a>
                             </p>

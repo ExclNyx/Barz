@@ -30,7 +30,7 @@ $statusLabel = [
 
 <section class="section wrap">
     <div class="page-head">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
                 <h1>Booking Saya</h1>
                 <p>Kelola semua jadwal cukur kamu di sini.</p>
@@ -63,7 +63,7 @@ $statusLabel = [
                 <div class="book-item-head">
                     <div>
                         <strong>Booking #<?php echo $booking['id']; ?></strong>
-                        <span class="tag tag-<?php echo $booking['status']; ?>" style="margin-left:12px"><?php echo $statusLabel[$booking['status']] ?? $booking['status']; ?></span>
+                        <span class="tag tag-<?php echo $booking['status']; ?>" class="ml-3"><?php echo $statusLabel[$booking['status']] ?? $booking['status']; ?></span>
                     </div>
                     <div class="bill"><?php echo formatPrice($booking['total_price']); ?></div>
                 </div>
@@ -91,12 +91,12 @@ $statusLabel = [
                         </span>
                     </div>
                     <?php if ($booking['notes']): ?>
-                    <div class="notebox" style="margin-top:12px">
+                    <div class="notebox mt-3">
                         <span class="lbl">Catatan</span>
                         <p><?php echo nl2br(htmlspecialchars($booking['notes'])); ?></p>
                     </div>
                     <?php endif; ?>
-                    <div class="micro" style="margin-top:8px">Dibuat: <?php echo date('d M Y H:i', strtotime($booking['created_at'])); ?></div>
+                    <div class="micro mt-2">Dibuat: <?php echo date('d M Y H:i', strtotime($booking['created_at'])); ?></div>
                 </div>
                 <?php if ($booking['status'] === 'pending' || $booking['status'] === 'confirmed'): ?>
                 <div class="book-item-foot">

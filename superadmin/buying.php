@@ -81,7 +81,7 @@ ob_start();
                 <td><?php echo formatDate($r['purchase_date']); ?></td>
                 <td><?php echo formatPrice($r['cost']); ?></td>
                 <td>
-                    <form method="POST" style="display:inline" onsubmit="return confirm('Yakin hapus laporan ini?')">
+                    <form method="POST" class="inline" onsubmit="return confirm('Yakin hapus laporan ini?')">
                         <input type="hidden" name="report_id" value="<?php echo $r['id']; ?>">
                         <button type="submit" name="delete_report" class="btn btn-s btn-d" aria-label="Hapus laporan">
                             <svg class="ic" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>

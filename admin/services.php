@@ -24,9 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_service'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_service'])) {
     $id = (int)$_POST['service_id'];
-    $active = (int)($_POST['is_active'] ?? 0);
-    $stmt = $db->prepare("UPDATE services SET is_active = ? WHERE id = ?");
-    $stmt->bind_param("ii", $active, $id);
+    $stmt = $db->prepare("UPDATE services SET is_active = IF(is_active = 1, 0, 1) WHERE id = ?");
+    $stmt->bind_param("i", $id);
     $stmt->execute();
     $_SESSION['success'] = 'Status layanan diperbarui';
     header('Location: ' . $_SERVER['PHP_SELF']);
@@ -87,7 +86,7 @@ ob_start();
                             <td><?php echo formatPrice($svc['price']); ?></td>
                             <td><?php echo $svc['duration']; ?> menit</td>
                             <td>
-                                <form method="POST" style="display:inline">
+                                <form method="POST" class="inline">
                                     <input type="hidden" name="service_id" value="<?php echo $svc['id']; ?>">
                                     <button type="submit" name="toggle_service" class="btn btn-s <?php echo $svc['is_active'] ? 'btn-g' : 'btn-o'; ?>">
                                         <?php echo $svc['is_active'] ? 'Aktif' : 'Nonaktif'; ?>
@@ -95,7 +94,7 @@ ob_start();
                                 </form>
                             </td>
                             <td>
-                                <form method="POST" style="display:inline" onsubmit="return confirm('Yakin hapus layanan ini?')">
+                                <form method="POST" class="inline" onsubmit="return confirm('Yakin hapus layanan ini?')">
                                     <input type="hidden" name="service_id" value="<?php echo $svc['id']; ?>">
                                     <button type="submit" name="delete_service" class="btn btn-s btn-d" aria-label="Hapus layanan">
                                         <svg class="ic" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>

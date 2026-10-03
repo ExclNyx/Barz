@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle ?? 'Admin - Barz Barbershop'; ?></title>
-    <link rel="stylesheet" href="/Barz/admin/assets/css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <?php include __DIR__ . '/../admin/assets/tailwind.php'; ?>
 </head>
 <body>
     <button class="burger" id="hamburgerBtn" aria-label="Buka sidebar">
@@ -14,10 +15,15 @@
     <div class="shell">
         <aside class="side" id="sidebar">
             <div class="side-head">
-                <h2>
-                    <svg class="ic" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
-                    BARZ ADMIN
-                </h2>
+                <div class="side-brand">
+                    <div class="side-brand-icon">
+                        <svg class="ic" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+                    </div>
+                    <div>
+                        <h2>BARZ ADMIN</h2>
+                        <span class="side-badge">Workspace</span>
+                    </div>
+                </div>
             </div>
             <nav aria-label="Navigasi admin">
                 <a href="/Barz/admin/index.php" data-nav="index">
@@ -46,20 +52,29 @@
                 </a>
             </nav>
             <div class="side-foot">
-                <?php if (isSuperAdmin()): ?>
-                <a href="/Barz/superadmin/index.php">
-                    <svg class="ic" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-                    Panel Super Admin
-                </a>
-                <?php endif; ?>
-                <a href="/Barz/index.php?page=home">
-                    <svg class="ic" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                    Ke Website
-                </a>
-                <a href="/Barz/auth/logout.php">
-                    <svg class="ic" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                    Logout
-                </a>
+                <div class="user-pill-side">
+                    <div class="user-ava-side"><?php echo strtoupper(substr($_SESSION['name'] ?? 'A', 0, 1)); ?></div>
+                    <div class="user-meta-side">
+                        <span class="user-name-side"><?php echo htmlspecialchars($_SESSION['name'] ?? 'Admin'); ?></span>
+                        <span class="user-role-side"><?php echo isSuperAdmin() ? 'Super Admin' : 'Admin Staff'; ?></span>
+                    </div>
+                </div>
+                <div class="side-foot-links">
+                    <?php if (isSuperAdmin()): ?>
+                    <a href="/Barz/superadmin/index.php" title="Panel Super Admin">
+                        <svg class="ic" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                        <span>Panel Super Admin</span>
+                    </a>
+                    <?php endif; ?>
+                    <a href="/Barz/index.php?page=home" title="Ke Website">
+                        <svg class="ic" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        <span>Ke Website</span>
+                    </a>
+                    <a href="/Barz/auth/logout.php" title="Logout" class="side-link-danger">
+                        <svg class="ic" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <span>Logout</span>
+                    </a>
+                </div>
             </div>
         </aside>
         <div class="main" id="mainContent">

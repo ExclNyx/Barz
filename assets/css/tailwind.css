@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #F9F7F2;
+  --color-surface: #FFF8F0;
+  --color-ink: #354024;
+  --color-muted: #5A5A5A;
+  --color-accent: #889063;
+  --color-accent-hi: #767E54;
+  --color-taupe: #C9A876;
+  --color-cafe: #4C3D19;
+  --color-bone: #E5D7C4;
+  --color-line: #CFBB99;
+  --color-line-subtle: #E5D7C4;
+  --color-ok: #6FA86F;
+  --color-bad: #D97F6E;
+  
+  --radius-card: 16px;
+  --radius-btn: 16px;
+  --radius-input: 8px;
+  
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.03);
+  --shadow-card-hover: 0 12px 32px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Custom component classes for Barz */
+@layer components {
+  .btn-p { @apply bg-accent text-white px-5 py-2.5 rounded-btn font-semibold transition hover:bg-accent-hi hover:shadow-lg; }
+  .btn-o { @apply bg-surface text-ink border border-line px-5 py-2.5 rounded-btn font-semibold transition hover:bg-bg hover:border-bone; }
+  .btn-d { @apply bg-red-50 text-bad border border-red-200 px-5 py-2.5 rounded-btn font-semibold transition hover:bg-bad hover:text-white; }
+  .btn-g { @apply bg-green-50 text-ok border border-green-200 px-5 py-2.5 rounded-btn font-semibold transition hover:bg-ok hover:text-white; }
+  
+  .card { @apply bg-surface border border-line rounded-card shadow-card overflow-hidden transition hover:shadow-card-hover; }
+  .card-h { @apply px-6 py-4 border-b border-line-subtle flex justify-between items-center gap-3 flex-wrap; }
+  .card-b { @apply p-6; }
+  
+  .input { @apply w-full px-4 py-2.5 border border-line rounded-input bg-surface text-ink transition focus:outline-none focus:border-accent focus:ring-3 focus:ring-accent/10; }
+  .select { @apply w-full px-4 py-2.5 border border-line rounded-input bg-surface text-ink transition focus:outline-none focus:border-accent focus:ring-3 focus:ring-accent/10; }
+  .area { @apply w-full px-4 py-2.5 border border-line rounded-input bg-surface text-ink transition focus:outline-none focus:border-accent focus:ring-3 focus:ring-accent/10 resize-y min-h-[100px]; }
+  .label { @apply block text-sm font-semibold text-ink mb-1.5; }
+  .field { @apply mb-4; }
+  
+  .tag { @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold capitalize; }
+  .tag::before { @apply w-1.5 h-1.5 rounded-full bg-current; content: ['']; }
+  .tag-pending { @apply bg-amber-50 text-amber-800 border border-amber-200; }
+  .tag-confirmed { @apply bg-green-50 text-green-800 border border-green-200; }
+  .tag-completed { @apply bg-blue-50 text-blue-800 border border-blue-200; }
+  .tag-cancelled { @apply bg-red-50 text-red-800 border border-red-200; }
+  .tag-no_show { @apply bg-gray-100 text-gray-500 border border-gray-200; }
+  
+  .stat { @apply bg-surface border border-line rounded-card p-5 shadow-card flex justify-between items-center transition hover:shadow-card-hover hover:-translate-y-0.5 hover:border-bone; }
+  .stat-ic { @apply w-12 h-12 rounded-xl flex items-center justify-center flex-none; }
+  .stat-ic svg { @apply w-5.5 h-5.5; }
+  .stat-ic.g { @apply bg-green-100 text-green-700; }
+  .stat-ic.t { @apply bg-blue-100 text-blue-700; }
+  .stat-ic.o { @apply bg-amber-100 text-amber-700; }
+  .stat-ic.r { @apply bg-red-100 text-red-700; }
+  
+  .stat-pill { @apply inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-surface border border-line rounded-full text-sm font-medium text-muted shadow-card; }
+  .stat-pill strong { @apply text-ink font-bold; }
+  .stat-pill.pending { @apply bg-amber-50 border-amber-200 text-amber-800; }
+  .stat-pill.confirmed { @apply bg-green-50 border-green-200 text-green-800; }
+  .stat-pill.completed { @apply bg-blue-50 border-blue-200 text-blue-800; }
+  .stat-pill.cancelled { @apply bg-red-50 border-red-200 text-red-800; }
+  
+  .action-btn { @apply inline-flex items-center justify-center w-8 h-8 border border-line bg-surface rounded-lg text-muted transition hover:bg-accent hover:border-accent hover:text-white hover:-translate-y-0.5; }
+  
+  .quick-status-btn { @apply inline-flex items-center justify-center px-2 py-1 rounded-lg text-xs font-semibold border transition font-sans whitespace-nowrap; }
+  .quick-status-btn:disabled { @apply opacity-45 cursor-not-allowed; }
+  .quick-status-btn:not(:disabled):hover { @apply -translate-y-0.5; }
+  .quick-status-btn.active { @apply shadow-[0_0_0_2px_currentColor] font-bold; }
+  .quick-status-btn.tag-pending { @apply bg-amber-50 text-amber-800 border-amber-200; }
+  .quick-status-btn.tag-pending.active { @apply bg-taupe text-white; }
+  .quick-status-btn.tag-confirmed { @apply bg-green-50 text-green-800 border-green-200; }
+  .quick-status-btn.tag-confirmed.active { @apply bg-ok text-white; }
+  .quick-status-btn.tag-completed { @apply bg-blue-50 text-blue-800 border-blue-200; }
+  .quick-status-btn.tag-completed.active { @apply bg-blue-600 text-white; }
+  .quick-status-btn.tag-cancelled { @apply bg-red-50 text-red-800 border-red-200; }
+  .quick-status-btn.tag-cancelled.active { @apply bg-bad text-white; }
+  
+  .notice { @apply rounded-lg px-4.5 py-3.5 text-base mb-5 flex items-center gap-2.5 border; }
+  .notice svg { @apply w-4.5 h-4.5 flex-none; }
+  .notice-ok { @apply bg-green-50 text-green-800 border-green-200; }
+  .notice-error { @apply bg-red-50 text-red-800 border-red-200; }
+  .notice-info { @apply bg-blue-50 text-blue-800 border-blue-200; }
+  
+  .empty-state { @apply text-center text-muted py-9; }
+  .empty-state svg { @apply w-12 h-12 mx-auto mb-3 opacity-50; }
+  .empty-state h3 { @apply text-lg font-bold text-ink mb-1.5; }
+  .empty-state p { @apply text-base; }
+}
+
+/* Animations */
+@layer utilities {
+  .animate-fade-in { animation: fadeIn 200ms ease-out; }
+  .animate-slide-up { animation: slideUp 300ms ease-out; }
+  .animate-pulse-soft { animation: pulseSoft 2s ease-in-out infinite; }
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulseSoft { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }

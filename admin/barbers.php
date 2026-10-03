@@ -24,9 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_barber'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_barber'])) {
     $id = (int)$_POST['barber_id'];
-    $active = (int)($_POST['is_active'] ?? 0);
-    $stmt = $db->prepare("UPDATE barbers SET is_active = ? WHERE id = ?");
-    $stmt->bind_param("ii", $active, $id);
+    $stmt = $db->prepare("UPDATE barbers SET is_active = IF(is_active = 1, 0, 1) WHERE id = ?");
+    $stmt->bind_param("i", $id);
     $stmt->execute();
     $_SESSION['success'] = 'Status barber diperbarui';
     header('Location: ' . $_SERVER['PHP_SELF']);
@@ -74,7 +73,7 @@ ob_start();
                             <td><?php echo htmlspecialchars($barber['specialization']); ?></td>
                             <td><?php echo $barber['experience_years']; ?> tahun</td>
                             <td>
-                                <form method="POST" style="display:inline">
+                                <form method="POST" class="inline">
                                     <input type="hidden" name="barber_id" value="<?php echo $barber['id']; ?>">
                                     <button type="submit" name="toggle_barber" class="btn btn-s <?php echo $barber['is_active'] ? 'btn-g' : 'btn-o'; ?>">
                                         <?php echo $barber['is_active'] ? 'Aktif' : 'Nonaktif'; ?>
@@ -82,7 +81,7 @@ ob_start();
                                 </form>
                             </td>
                             <td>
-                                <form method="POST" style="display:inline" onsubmit="return confirm('Yakin hapus barber ini?')">
+                                <form method="POST" class="inline" onsubmit="return confirm('Yakin hapus barber ini?')">
                                     <input type="hidden" name="barber_id" value="<?php echo $barber['id']; ?>">
                                     <button type="submit" name="delete_barber" class="btn btn-s btn-d" aria-label="Hapus barber">
                                         <svg class="ic" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>

@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle ?? 'Barz Barbershop'; ?></title>
-    <link rel="stylesheet" href="/Barz/assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <?php include __DIR__ . '/../assets/tailwind.php'; ?>
 </head>
 <body>
     <header class="topbar">
@@ -33,7 +34,7 @@
                                     <a href="/Barz/auth/logout.php" class="lo">Logout</a>
                                 </div>
                             <?php else: ?>
-                                <a href="/Barz/index.php?area=auth&page=login" class="tlink" style="padding:8px 12px">Login</a>
+                                <a href="/Barz/index.php?area=auth&page=login" class="tlink px-3 py-2">Login</a>
                                 <a href="/Barz/index.php?area=auth&page=register" class="button button-primary button-small">Register</a>
                             <?php endif; ?>
                             <button class="iconbtn menu-toggle" id="menuToggle" aria-label="Buka menu">
@@ -99,7 +100,7 @@
 
     <?php if (isLoggedIn()): ?>
     <div class="chat-fab-zone">
-        <div class="chat-win" id="chatWindow" style="display:none">
+        <div class="chat-win hidden" id="chatWindow" >
             <div class="chat-win-head">
                 <h3>Barz Chat</h3>
                 <button class="chat-x" id="chatClose" aria-label="Tutup chat">&times;</button>
@@ -124,8 +125,8 @@
         var t=document.getElementById('menuToggle'),m=document.getElementById('mnav');
         if(t&&m){t.addEventListener('click',function(){m.classList.toggle('open');});}
         var w=document.getElementById('chatWindow'),b=document.getElementById('chatToggle'),x=document.getElementById('chatClose');
-        if(b&&w){b.addEventListener('click',function(){w.style.display=(w.style.display==='flex')?'none':'flex';});}
-        if(x&&w){x.addEventListener('click',function(){w.style.display='none';});}
+        if(b&&w){b.addEventListener('click',function(){w.classList.toggle('hidden');});}
+        if(x&&w){x.addEventListener('click',function(){w.classList.add('hidden');});}
     })();
     </script>
 </body>
