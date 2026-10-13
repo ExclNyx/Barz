@@ -5,39 +5,56 @@ $pageTitle = 'Booking - Barz Barbershop';
 $services = getServices(true);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $serviceId = (int)$_POST['service_id'];
-    $bookingDate = $_POST['booking_date'];
-    $startTime = $_POST['start_time'];
-    $notes = sanitize($_POST['notes'] ?? '');
+    $serviceId = (int)($_POST['service_id'] ?? 0);
+    $bookingDate = trim($_POST['booking_date'] ?? '');
+    $startTime = trim($_POST['start_time'] ?? '');
+    $notes = trim(strip_tags($_POST['notes'] ?? ''));
 
-    $db = getDB();
-    $stmt = $db->prepare("SELECT price, duration FROM services WHERE id = ?");
-    $stmt->bind_param("i", $serviceId);
-    $stmt->execute();
-    $service = $stmt->get_result()->fetch_assoc();
+    $validDate = preg_match('/^\d{4}-\d{2}-\d{2}$/', $bookingDate)
+        && strtotime($bookingDate) !== false
+        && date('Y-m-d', strtotime($bookingDate)) === $bookingDate;
+    $validTime = preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $startTime);
 
-    $endTime = date('H:i', strtotime($startTime) + ($service['duration'] * 60));
-
-    $available = false;
-    $barbers = getBarbers(true);
-    foreach ($barbers as $barber) {
-        if (isSlotAvailable($bookingDate, $startTime, $endTime, $barber['id'])) {
-            $available = true;
-            break;
-        }
-    }
-
-    if ($available) {
-        $bookingId = createBooking($_SESSION['user_id'], $serviceId, null, $bookingDate, $startTime, $endTime, $service['price'], $notes);
-
-        if ($bookingId) {
-            $_SESSION['success'] = 'Booking berhasil dibuat! Menunggu konfirmasi admin.';
-            redirect('my-bookings', 'customer');
-        } else {
-            $error = 'Gagal membuat booking. Silakan coba lagi.';
-        }
+    if ($serviceId < 1 || !$validDate || !$validTime || $bookingDate < date('Y-m-d')) {
+        $error = 'Data booking tidak valid. Silakan pilih layanan, tanggal, dan jam yang benar.';
     } else {
-        $error = 'Slot waktu tidak tersedia. Silakan pilih waktu lain.';
+        $db = getDB();
+        $stmt = $db->prepare('SELECT price, duration FROM services WHERE id = ? AND is_active = 1');
+        $stmt->bind_param('i', $serviceId);
+        $stmt->execute();
+        $service = $stmt->get_result()->fetch_assoc();
+
+        if (!$service) {
+            $error = 'Layanan tidak ditemukan atau sudah tidak aktif.';
+        } else {
+            $endTime = date('H:i:s', strtotime($startTime) + ((int)$service['duration'] * 60));
+            $closingTime = substr((string)getSetting('closing_time', '21:00'), 0, 5);
+
+            if (substr($endTime, 0, 5) > $closingTime) {
+                $error = 'Durasi layanan melewati jam operasional. Silakan pilih jam yang lebih awal.';
+            } else {
+                $availableBarberId = null;
+                $barbers = getBarbers(true);
+                foreach ($barbers as $barber) {
+                    if (isSlotAvailable($bookingDate, $startTime, $endTime, (int)$barber['id'])) {
+                        $availableBarberId = (int)$barber['id'];
+                        break;
+                    }
+                }
+
+                if ($availableBarberId !== null) {
+                    // Barber tidak dipilih oleh pelanggan; sistem menentukan barber yang masih tersedia.
+                    $bookingId = createBooking($_SESSION['user_id'], $serviceId, $availableBarberId, $bookingDate, $startTime, $endTime, $service['price'], $notes);
+                    if ($bookingId) {
+                        $_SESSION['success'] = 'Booking berhasil dibuat! Menunggu konfirmasi admin.';
+                        redirect('my-bookings', 'customer');
+                    }
+                    $error = 'Gagal membuat booking. Silakan coba lagi.';
+                } else {
+                    $error = 'Slot waktu tidak tersedia. Silakan pilih waktu lain.';
+                }
+            }
+        }
     }
 }
 ob_start();
@@ -86,8 +103,8 @@ ob_start();
                             <div class="pick-grid grid grid-cols-2 gap-3 max-[600px]:grid-cols-[1fr]">
                                 <?php foreach ($items as $service): ?>
                                 <label class="pick cursor-pointer">
-                                    <input type="radio" name="service_id" class="service-radio absolute opacity-0 pointer-events-none" value="<?php echo $service['id']; ?>" data-price="<?php echo $service['price']; ?>" data-duration="<?php echo $service['duration']; ?>" required <?php echo (isset($_GET['service']) && $_GET['service'] == $service['id']) ? 'checked' : ''; ?>>
-                                    <div class="pick-box p-4.5 border border-barz-line rounded-2xl transition-colors bg-white hover:border-barz-accent-hover [.pick_input:checked__+__&]:border-barz-accent [.pick_input:checked__+__&]:bg-[rgba(136,144,99,.07)]">
+                                    <input type="radio" name="service_id" class="service-radio peer absolute opacity-0 pointer-events-none" value="<?php echo $service['id']; ?>" data-price="<?php echo $service['price']; ?>" data-duration="<?php echo $service['duration']; ?>" required <?php echo (isset($_GET['service']) && $_GET['service'] == $service['id']) ? 'checked' : ''; ?>>
+                                    <div class="pick-box p-4.5 border border-barz-line rounded-2xl transition-colors bg-white hover:border-barz-accent-hover peer-checked:border-barz-accent peer-checked:bg-[#889063]/10 peer-focus-visible:ring-4 peer-focus-visible:ring-[#889063]/15">
                                         <h4 class="font-sans font-bold leading-tight tracking-tight [margin-bottom:4px]"><?php echo htmlspecialchars($service['name']); ?></h4>
                                         <p class="desc text-[.78rem] text-barz-muted [margin-bottom:10px]"><?php echo htmlspecialchars($service['description']); ?></p>
                                         <div class="pick-meta">
@@ -198,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
     currentMonth.setDate(1);
     var today = new Date();
     today.setHours(0,0,0,0);
-    var weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    var weekdays = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
 
     function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
@@ -206,19 +223,19 @@ document.addEventListener('DOMContentLoaded', function() {
         var year = currentMonth.getFullYear();
         var month = currentMonth.getMonth();
         
-        // Update header - "September 2026" format matching reference photo
-        var monthName = currentMonth.toLocaleDateString('en-US', { month: 'long' });
+        // Nama bulan mengikuti locale Indonesia.
+        var monthName = currentMonth.toLocaleDateString('id-ID', { month: 'long' });
         document.getElementById('calMonthYear').innerHTML = 
             '<span class="cal-month">' + monthName + '</span><span class="cal-year">' + year + '</span>';
         
-        // First day of month & days in month (Sunday start = 0)
+        // Hari pertama bulan & jumlah hari (minggu sebagai kolom pertama)
         var firstDay = new Date(year, month, 1);
         var startDay = firstDay.getDay(); // 0=Sunday
         var daysInMonth = new Date(year, month + 1, 0).getDate();
         var daysInPrevMonth = new Date(year, month, 0).getDate();
         var startIndex = startDay;
         
-        // Weekday headers (Sun-Sat)
+        // Header hari (Min-Sab)
         var wdHtml = '';
         weekdays.forEach(function(d) { wdHtml += '<div class="cal-weekday text-center text-[0.85rem] font-semibold text-[#1e293b] py-2 px-0 max-[600px]:text-xs">' + d + '</div>'; });
         document.getElementById('calWeekdays').innerHTML = wdHtml;
@@ -249,26 +266,43 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             dateObj.setHours(0,0,0,0);
-            dateStr = dateObj.toISOString().split('T')[0];
+            // Hindari toISOString(): tanggal lokal dapat bergeser satu hari di zona WIB.
+            dateStr = dateObj.getFullYear() + '-' + String(dateObj.getMonth() + 1).padStart(2, '0') + '-' + String(dateObj.getDate()).padStart(2, '0');
             isToday = dateObj.getTime() === today.getTime();
-            isPast = dateObj < today;
-            
-            btn.className = 'cal-day w-9.5 h-9.5 my-0 mx-auto border rounded-lg bg-transparent text-center cursor-pointer text-[0.92rem] font-medium text-[#334155] flex items-center justify-center transition font-sans [&:hover:not(.past):not(.other-month)]:bg-[#f1f5f9] [&:hover:not(.past):not(.other-month)]:text-[#0f172a] [&.other-month]:[color:#cbd5e1_!important] [&.other-month]:pointer-events-none [&.past]:[color:#cbd5e1_!important] [&.past]:pointer-events-none [&.today]:border-[1.5px] [&.today]:border-[#0ea5e9] [&.today]:text-[#0ea5e9] [&.today]:font-bold [&.selected]:[background-color:#0ea5e9_!important] [&.selected]:[color:#ffffff_!important] [&.selected]:font-bold [&.selected]:rounded-[10px] [&.selected]:shadow-[0_4px_12px_rgba(14,_165,_233,_.4)] max-[600px]:w-8 max-[600px]:h-8 max-[600px]:text-[0.82rem]';
+            isPast = dateObj.getTime() < today.getTime();
+
+            // Tombol tanggal tidak boleh menampilkan caret teks dan harus jelas statusnya.
+            btn.className = 'cal-day mx-auto flex h-10 w-10 select-none touch-manipulation items-center justify-center rounded-full border border-transparent bg-transparent text-sm font-medium text-barz-ink transition-colors cursor-pointer hover:bg-barz-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-barz-accent focus-visible:ring-offset-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-100 disabled:text-slate-300 disabled:bg-slate-50 [&.today]:border-barz-accent [&.today]:font-bold [&.selected]:border-barz-accent [&.selected]:bg-barz-accent [&.selected]:font-bold [&.selected]:text-white [&.selected]:shadow-md [&.other-month]:text-slate-300 max-[600px]:h-8 max-[600px]:w-8 max-[600px]:text-xs';
             if (!isCurrentMonth) btn.classList.add('other-month');
-            if (isPast && isCurrentMonth) btn.classList.add('past');
+            if (isPast) btn.classList.add('past');
             if (isToday) btn.classList.add('today');
             if (selectedDate === dateStr) btn.classList.add('selected');
-            
+
+            // Disabled native button menjaga tanggal lampau/di luar bulan tidak bisa dipilih via mouse maupun keyboard.
+            btn.disabled = !isCurrentMonth || isPast;
+            btn.setAttribute('aria-label', dateObj.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
+            if (selectedDate === dateStr) btn.setAttribute('aria-pressed', 'true');
+            else btn.setAttribute('aria-pressed', 'false');
+
             btn.textContent = dayNum;
             btn.dataset.date = dateStr;
-            
-            if (isCurrentMonth && !isPast) {
+
+            if (!btn.disabled) {
                 btn.addEventListener('click', function() {
+                    if (this.disabled) return;
                     var all = calendarGrid.querySelectorAll('.cal-day');
-                    for (var k = 0; k < all.length; k++) all[k].classList.remove('selected');
+                    for (var k = 0; k < all.length; k++) {
+                        all[k].classList.remove('selected');
+                        all[k].setAttribute('aria-pressed', 'false');
+                    }
                     this.classList.add('selected');
+                    this.setAttribute('aria-pressed', 'true');
                     selectedDate = this.dataset.date;
                     bookingDateInput.value = selectedDate;
+                    // Reset jam sebelumnya karena ketersediaan bergantung pada tanggal.
+                    selectedTime = null;
+                    startTimeInput.value = '';
+                    submitBtn.disabled = true;
                     
                     // Auto-select first service if user hasn't selected one yet
                     if (!selectedService) {
@@ -363,31 +397,91 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // 5 columns grid
-                var html = '<div class="slots-grid-5col grid grid-cols-5 gap-2 max-[600px]:gap-1.5">';
-                allSlots.forEach(function(slot) {
-                    var cls = 'slot-btn h-10.5 py-0 px-1 rounded-lg text-[0.82rem] font-semibold flex items-center justify-center font-sans transition tracking-[0.02em] [&.available]:bg-white [&.available]:border [&.available]:border-dashed [&.available]:border-[#cbd5e1] [&.available]:text-[#1e293b] [&.available]:cursor-pointer [&.available]:shadow-[0_1px_2px_rgba(0,0,0,0.03)] [&.available:hover]:border-[#0ea5e9] [&.available:hover]:border-solid [&.available:hover]:text-[#0ea5e9] [&.available:hover]:bg-[#f0f9ff] [&.available:hover]:-translate-y-px [&.reserved]:bg-[#142239] [&.reserved]:border [&.reserved]:border-[#142239] [&.reserved]:text-white [&.reserved]:cursor-not-allowed [&.reserved]:opacity-[0.98] [&.reserved]:shadow-[0_1px_3px_rgba(20,34,57,0.2)] [&.selected]:bg-[#0ea5e9] [&.selected]:border-[1.5px] [&.selected]:border-[#0ea5e9] [&.selected]:text-white [&.selected]:font-bold [&.selected]:cursor-pointer [&.selected]:scale-[1.02] [&.selected]:shadow-[0_3px_12px_rgba(14,165,233,0.45)]';
-                    if (slot.available) {
-                        cls += ' available';
-                    } else {
-                        cls += ' reserved';
-                    }
-                    if (selectedTime === slot.time) cls += ' selected';
-                    html += '<button type="button" class="' + cls + '" data-time="' + esc(slot.time) + '"' + (slot.available ? '' : ' disabled') + '>' + esc(slot.time) + '</button>';
-                });
-                html += '</div>';
-                timeSlotsDiv.innerHTML = html;
+        // Grid jam booking
+        var baseSlotClasses = [
+            'slot-btn flex h-11 w-full select-none items-center justify-center',
+            'rounded-xl border px-2 text-sm font-semibold tracking-wide',
+            'transition-all duration-200 cursor-pointer',
+            'focus-visible:outline-none focus-visible:ring-2',
+            'focus-visible:ring-barz-accent focus-visible:ring-offset-2',
+
+            // Tampilan normal
+            'border-barz-line bg-white text-barz-ink shadow-sm',
+
+            // Hover
+            'hover:-translate-y-0.5 hover:border-barz-accent',
+            'hover:bg-[#f2f4e8] hover:shadow-md',
+            'active:translate-y-0',
+
+            // Tampilan ketika dipilih
+            'aria-pressed:bg-barz-accent',
+            'aria-pressed:border-barz-accent',
+            'aria-pressed:text-white',
+            'aria-pressed:shadow-md',
+            'aria-pressed:ring-2',
+            'aria-pressed:ring-barz-accent/25',
+            'aria-pressed:hover:bg-barz-accent',
+            'aria-pressed:hover:text-white',
+
+            // Tampilan jam yang sudah dipesan
+            'disabled:cursor-not-allowed',
+            'disabled:bg-barz-ink',
+            'disabled:border-barz-ink',
+            'disabled:text-white',
+            'disabled:opacity-90',
+            'disabled:hover:translate-y-0',
+            'disabled:hover:bg-barz-ink',
+            'disabled:hover:border-barz-ink',
+            'disabled:hover:shadow-none'
+        ].join(' ');
+
+        var html = '<div class="slots-grid-5col grid grid-cols-5 gap-2 max-[600px]:gap-1.5">';
+
+        allSlots.forEach(function(slot) {
+            var isSelected = slot.available && selectedTime === slot.time;
+
+            var cls = baseSlotClasses;
+
+            if (slot.available) {
+                cls += ' available';
+            } else {
+                cls += ' reserved';
+            }
+
+            html += '<button type="button"'
+                + ' class="' + cls + '"'
+                + ' data-time="' + esc(slot.time) + '"'
+                + ' aria-pressed="' + (isSelected ? 'true' : 'false') + '"'
+                + (slot.available ? '' : ' disabled')
+                + '>'
+                + esc(slot.time)
+                + '</button>';
+        });
+
+        html += '</div>';
+        timeSlotsDiv.innerHTML = html;
                 
-                var btns = timeSlotsDiv.querySelectorAll('.slot-btn.available');
-                for (var i = 0; i < btns.length; i++) {
-                    btns[i].addEventListener('click', function() {
-                        var all = timeSlotsDiv.querySelectorAll('.slot-btn');
-                        for (var k = 0; k < all.length; k++) all[k].classList.remove('selected');
-                        this.classList.add('selected');
-                        selectedTime = this.dataset.time;
-                        startTimeInput.value = selectedTime;
-                        updateSummary(); submitBtn.disabled = false;
-                    });
-                }
+            var btns = timeSlotsDiv.querySelectorAll('.slot-btn.available');
+
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].addEventListener('click', function() {
+                    // Hapus status terpilih dari semua jam
+                    var all = timeSlotsDiv.querySelectorAll('.slot-btn');
+
+                    for (var k = 0; k < all.length; k++) {
+                        all[k].setAttribute('aria-pressed', 'false');
+                    }
+
+                    // Tandai jam yang baru dipilih
+                    this.setAttribute('aria-pressed', 'true');
+
+                    selectedTime = this.dataset.time;
+                    startTimeInput.value = selectedTime;
+
+                    updateSummary();
+                    submitBtn.disabled = false;
+                });
+            }
             })
             .catch(function() { timeSlotsDiv.innerHTML = '<div class="slots-placeholder text-center py-9 px-4 bg-white rounded-xl border border-dashed border-[#cbd5e1] text-[#64748b]"><p>Gagal memuat jam. Coba lagi.</p></div>'; });
     }

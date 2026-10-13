@@ -177,12 +177,11 @@ function getAvailableSlots($date, $serviceId, $barberId = null) {
         // Check if booking fits within operating hours
         $fitsInOperatingHours = ($slotEndTime <= $closingTime);
 
-        // Slot is available only if is_available=1, no conflicting booking, and fits in hours
+        // Slot tersedia jika setidaknya satu barber aktif memiliki slot awal ini
+        // dan tidak memiliki booking lain yang bertabrakan selama durasi layanan.
         $available = false;
         if ($fitsInOperatingHours && $row['is_available']) {
-            if (!isSlotBooked($date, $slotStart, $slotEndTime, $barberId)) {
-                $available = true;
-            }
+            $available = isSlotAvailable($date, $slotStart, $slotEndTime, $barberId);
         }
 
         $slots[] = [
@@ -198,39 +197,42 @@ function getAvailableSlots($date, $serviceId, $barberId = null) {
 function isSlotAvailable($date, $startTime, $endTime, $barberId = null) {
     $db = getDB();
 
-    $sql = "SELECT COUNT(*) as count FROM time_slots ts
+    // Slot pilihan harus benar-benar dimulai pada jam yang dipilih dan dimiliki barber aktif.
+    // Bentrok diperiksa terhadap seluruh durasi layanan, bukan hanya slot 15 menit pertama.
+    $sql = "SELECT COUNT(*) AS count
+            FROM time_slots ts
+            INNER JOIN barbers br ON br.id = ts.barber_id AND br.is_active = 1
             WHERE ts.date = ?
-            AND ts.is_available = 1
-            AND ts.start_time < ?
-            AND ts.end_time > ?";
+              AND ts.start_time = ?
+              AND ts.is_available = 1";
+    $params = [$date, $startTime];
+    $types = 'ss';
 
-    $params = [$date, $endTime, $startTime];
-    $types = "sss";
-
-    if ($barberId) {
+    if ($barberId !== null) {
         $sql .= " AND ts.barber_id = ?";
-        $params[] = $barberId;
-        $types .= "i";
+        $params[] = (int)$barberId;
+        $types .= 'i';
     }
 
     $sql .= " AND NOT EXISTS (
-        SELECT 1 FROM bookings b
-        WHERE b.booking_date = ?
-        AND b.barber_id = ts.barber_id
-        AND b.status NOT IN ('cancelled', 'no_show')
-        AND b.start_time < ?
-        AND b.end_time > ?
-    )";
-    $params = array_merge($params, [$date, $endTime, $startTime]);
-    $types .= "sss";
+                SELECT 1
+                FROM bookings b
+                WHERE b.booking_date = ts.date
+                  AND b.barber_id = ts.barber_id
+                  AND b.status NOT IN ('cancelled', 'no_show')
+                  AND b.start_time < ?
+                  AND b.end_time > ?
+            )";
+    $params[] = $endTime;
+    $params[] = $startTime;
+    $types .= 'ss';
 
     $stmt = $db->prepare($sql);
     $stmt->bind_param($types, ...$params);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    $row = $stmt->get_result()->fetch_assoc();
 
-    return $row['count'] > 0;
+    return (int)($row['count'] ?? 0) > 0;
 }
 
 function createBooking($customerId, $serviceId, $barberId, $date, $startTime, $endTime, $totalPrice, $notes = '') {
@@ -286,14 +288,19 @@ function sendNotification($userId, $subject, $message) {
 
 function getStatusBadge($status) {
     $badges = [
-        'pending' => '<span class="tag tag-pending">Pending</span>',
-        'confirmed' => '<span class="tag tag-confirmed">Confirmed</span>',
-        'completed' => '<span class="tag tag-completed">Completed</span>',
-        'cancelled' => '<span class="tag tag-cancelled">Cancelled</span>',
-        'no_show' => '<span class="tag tag-no_show">No Show</span>'
+        'pending' => ['label' => 'Menunggu', 'classes' => 'border-amber-200 bg-amber-50 text-amber-800'],
+        'confirmed' => ['label' => 'Terkonfirmasi', 'classes' => 'border-emerald-200 bg-emerald-50 text-emerald-800'],
+        'completed' => ['label' => 'Selesai', 'classes' => 'border-sky-200 bg-sky-50 text-sky-800'],
+        'cancelled' => ['label' => 'Dibatalkan', 'classes' => 'border-rose-200 bg-rose-50 text-rose-800'],
+        'no_show' => ['label' => 'Tidak Hadir', 'classes' => 'border-slate-200 bg-slate-100 text-slate-700'],
     ];
 
-    return $badges[$status] ?? $status;
+    if (!isset($badges[$status])) {
+        return '<span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">' . htmlspecialchars((string)$status) . '</span>';
+    }
+
+    $badge = $badges[$status];
+    return '<span class="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ' . $badge['classes'] . '">' . $badge['label'] . '</span>';
 }
 
 function redirect($page, $area = 'customer') {

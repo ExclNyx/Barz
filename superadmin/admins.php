@@ -74,7 +74,9 @@ ob_start();
                 <td class="py-3.5 px-4.5 text-[0.88rem] text-barz-ink border-b border-barz-footer align-middle border-b-0"><strong><?php echo htmlspecialchars($a['name']); ?></strong></td>
                 <td class="py-3.5 px-4.5 text-[0.88rem] text-barz-ink border-b border-barz-footer align-middle border-b-0"><?php echo htmlspecialchars($a['email']); ?></td>
                 <td class="py-3.5 px-4.5 text-[0.88rem] text-barz-ink border-b border-barz-footer align-middle border-b-0"><?php echo htmlspecialchars($a['phone'] ?? '-'); ?></td>
-                <td class="py-3.5 px-4.5 text-[0.88rem] text-barz-ink border-b border-barz-footer align-middle border-b-0"><?php echo $a['role'] === 'super_admin' ? '<span class="tag tag-confirmed">Super Admin</span>' : '<span class="tag tag-pending">Admin</span>'; ?></td>
+                <td class="py-3.5 px-4.5 text-[0.88rem] text-barz-ink border-b border-barz-footer align-middle border-b-0"><?php echo $a['role'] === 'super_admin'
+                    ? '<span class="inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-800">Super Admin</span>'
+                    : '<span class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-800">Admin</span>'; ?></td>
                 <td class="py-3.5 px-4.5 text-[0.88rem] text-barz-ink border-b border-barz-footer align-middle border-b-0">
                     <?php if ($a['id'] != $_SESSION['user_id'] && $a['role'] !== 'super_admin'): ?>
                     <form method="POST" class="inline" onsubmit="return confirm('Yakin hapus admin ini?')">

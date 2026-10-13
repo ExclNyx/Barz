@@ -37,7 +37,7 @@
                                 <a href="/Barz/index.php?area=auth&page=login" class="tlink text-barz-accent font-semibold no-underline hover:underline py-2 px-3" >Login</a>
                                 <a href="/Barz/index.php?area=auth&page=register" class="button button-primary button-small text-barz-accent inline-flex items-center justify-center gap-2 py-3.5 px-7 rounded-2xl font-semibold text-[.95rem] no-underline cursor-pointer border border-transparent transition-colors bg-barz-accent text-white hover:bg-barz-accent-hover py-[9px] px-4 text-[.85rem] disabled:opacity-50 disabled:cursor-not-allowed">Register</a>
                             <?php endif; ?>
-                            <button class="iconbtn menu-toggle font-sans inline-flex items-center justify-center w-10 h-10 border border-transparent bg-transparent rounded-xl text-barz-ink cursor-pointer no-underline hover:text-barz-accent hover:border-barz-line hover:bg-barz-surface hidden max-[960px]:inline-flex" id="menuToggle" aria-label="Buka menu">
+                            <button class="iconbtn menu-toggle font-sans items-center justify-center w-10 h-10 border border-transparent bg-transparent rounded-xl text-barz-ink cursor-pointer no-underline hover:text-barz-accent hover:border-barz-line hover:bg-barz-surface hidden max-[960px]:inline-flex" id="menuToggle" aria-label="Buka menu">
                                 <svg class="ic w-5 h-5 flex-none [fill:none] stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                             </button>
                         </div>

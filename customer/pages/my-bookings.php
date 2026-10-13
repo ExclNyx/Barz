@@ -19,18 +19,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_booking'])) {
 
 ob_start();
 
-$statusLabel = [
-    'pending' => 'Menunggu',
-    'confirmed' => 'Terkonfirmasi',
-    'completed' => 'Selesai',
-    'cancelled' => 'Dibatalkan',
-    'no_show' => 'Tidak Hadir',
-];
 ?>
 
 <section class="section wrap max-w-280 my-0 mx-auto [padding-left:24px] [padding-right:24px] py-14 px-0 max-[600px]:py-10 max-[600px]:px-0">
-    <div class="page-head [margin-bottom:32px]" class="flex justify-between items-center flex-wrap gap-3">
-        <div >
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
             <div>
                 <h1 class="font-sans font-bold leading-tight tracking-tight text-2xl [margin-bottom:6px]">Booking Saya</h1>
                 <p>Kelola semua jadwal cukur kamu di sini.</p>
@@ -63,7 +56,7 @@ $statusLabel = [
                 <div class="book-item-head flex justify-between items-start gap-3 py-4.5 px-5 border-b border-barz-line bg-[rgba(249,247,242,.6)]">
                     <div>
                         <strong class="text-[.95rem]">Booking #<?php echo $booking['id']; ?></strong>
-                        <span class="tag tag-<?php echo $booking['status']; ?> [margin-top:4px] inline-block py-1 px-2.5 rounded text-[.75rem] font-semibold" ><?php echo $statusLabel[$booking['status']] ?? $booking['status']; ?></span>
+                        <span class="mt-1 inline-block"><?php echo getStatusBadge($booking['status']); ?></span>
                     </div>
                     <div class="bill text-xl font-bold text-barz-accent [margin-bottom:6px]"><?php echo formatPrice($booking['total_price']); ?></div>
                 </div>
@@ -71,10 +64,6 @@ $statusLabel = [
                     <div class="kv-row flex justify-between gap-3 py-2 px-0 border-b border-barz-line last:border-b">
                         <span class="lbl text-[.75rem] text-barz-muted block [margin-bottom:2px] min-w-20 flex-none">Layanan</span>
                         <strong><?php echo htmlspecialchars($booking['service_name']); ?></strong>
-                    </div>
-                    <div class="kv-row flex justify-between gap-3 py-2 px-0 border-b border-barz-line last:border-b">
-                        <span class="lbl text-[.75rem] text-barz-muted block [margin-bottom:2px] min-w-20 flex-none">Barber</span>
-                        <strong><?php echo htmlspecialchars($booking['barber_name'] ?? 'Siapa Saja'); ?></strong>
                     </div>
                     <div class="kv-row flex justify-between gap-3 py-2 px-0 border-b border-barz-line last:border-b">
                         <span class="lbl text-[.75rem] text-barz-muted block [margin-bottom:2px] min-w-20 flex-none">Tanggal</span>
