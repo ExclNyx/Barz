@@ -1,0 +1,13 @@
+{
+  "name": "barz/barbershop-booking",
+  "description": "Barz barbershop booking app using PHP and Firebase Cloud Firestore",
+  "type": "project",
+  "require": {
+    "php": "^8.2",
+    "google/cloud-firestore": "^2.3"
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  }
+}

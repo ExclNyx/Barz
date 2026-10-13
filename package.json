@@ -1,0 +1,14 @@
+{
+  "name": "barz-barbershop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tailwind CSS build untuk frontend PHP Barz Barbershop",
+  "scripts": {
+    "css:build": "npx @tailwindcss/cli -i ./src/css/tailwind.css -o ./assets/css/tailwind.css",
+    "css:watch": "npx @tailwindcss/cli -i ./src/css/tailwind.css -o ./assets/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.10",
+    "tailwindcss": "^4.1.10"
+  }
+}

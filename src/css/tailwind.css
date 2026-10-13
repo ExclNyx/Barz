@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --color-barz-accent: #889063;
+  --color-barz-accent-hover: #767E54;
+  --color-barz-ink: #354024;
+  --color-barz-ink-hover: #26331D;
+  --color-barz-bg: #F9F7F2;
+  --color-barz-surface: #FFF8F0;
+  --color-barz-line: #CFBB99;
+  --color-barz-danger: #D97F6E;
+  --color-barz-gold: #C9A876;
+  --color-barz-deep: #2D3A1F;
+  --color-barz-muted-light: #A8B89A;
+  --color-barz-footer: #E5D7C4;
+  --color-barz-muted: #5A5A5A;
+  --color-barz-success: #6FA86F;
+  --animate-scroll-left: scroll-left 30s linear infinite;
+  @keyframes scroll-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}

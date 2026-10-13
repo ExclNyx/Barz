@@ -7,8 +7,7 @@
         var alerts = document.querySelectorAll('.notice:not(.notice-info)');
         alerts.forEach(function(alert) {
             if (!alert.querySelector('.btn-close')) {
-                alert.style.transition = 'opacity 0.5s';
-                alert.style.opacity = '0';
+                alert.classList.add('transition-opacity', 'duration-500', 'opacity-0');
                 setTimeout(function() { if (alert.parentNode) alert.remove(); }, 500);
             }
         });

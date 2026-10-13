@@ -16,7 +16,13 @@ switch ($area) {
             header('Location: /Barz/index.php?area=customer&page=login');
             exit;
         }
-        include __DIR__ . '/admin/index.php';
+        $adminPage = $_GET['page'] ?? 'index';
+        $adminFile = __DIR__ . '/admin/' . $adminPage . '.php';
+        if (file_exists($adminFile)) {
+            include $adminFile;
+        } else {
+            include __DIR__ . '/admin/index.php';
+        }
         break;
 
     case 'superadmin':

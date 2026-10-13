@@ -1,0 +1,300 @@
+{
+  "info": {
+    "name": "Barz API",
+    "description": "REST API Barz Barbershop untuk Modul 2, 4, 5, dan 6.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "serviceId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "List services",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/services"
+      }
+    },
+    {
+      "name": "List slots",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/slots?service_id={{serviceId}}&date=2026-12-01",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "slots"
+          ],
+          "query": [
+            {
+              "key": "service_id",
+              "value": "{{serviceId}}"
+            },
+            {
+              "key": "date",
+              "value": "2026-12-01"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Register customer",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Customer Demo\",\n  \"email\": \"customer.demo@example.com\",\n  \"phone\": \"081234567890\",\n  \"password\": \"rahasia123\",\n  \"password_confirmation\": \"rahasia123\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/register"
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@barz.com\",\n  \"password\": \"barz2024\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.access_token) pm.collectionVariables.set('token', json.access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Current user (JWT)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/me"
+      }
+    },
+    {
+      "name": "Create booking (JWT)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"service_id\": 1,\n  \"booking_date\": \"2026-12-01\",\n  \"start_time\": \"09:00\",\n  \"notes\": \"Booking melalui API\"\n}"
+        },
+        "url": "{{baseUrl}}/bookings"
+      }
+    },
+    {
+      "name": "My bookings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/bookings"
+      }
+    },
+    {
+      "name": "Admin create service",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Pomade Styling\",\n  \"description\": \"Styling rambut selepas potong\",\n  \"price\": 25000,\n  \"duration\": 15,\n  \"is_active\": true\n}"
+        },
+        "url": "{{baseUrl}}/admin/services"
+      }
+    },
+    {
+      "name": "Admin update booking status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"confirmed\"\n}"
+        },
+        "url": "{{baseUrl}}/admin/bookings/1/status"
+      }
+    },
+    {
+      "name": "Logout (JWT)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/auth/logout"
+      }
+    },
+    {
+      "name": "Admin list all services",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/admin/services"
+      }
+    },
+    {
+      "name": "Admin update service",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Haircut Basic Updated\",\n  \"price\": 40000,\n  \"duration\": 30,\n  \"is_active\": true\n}"
+        },
+        "url": "{{baseUrl}}/admin/services/{{serviceId}}"
+      }
+    },
+    {
+      "name": "Admin delete or deactivate service",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/admin/services/{{serviceId}}"
+      }
+    }
+  ]
+}
