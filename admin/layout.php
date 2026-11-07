@@ -38,10 +38,6 @@
                     <svg class="ic w-4.5 h-4.5 flex-none [fill:none] stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
                     Layanan
                 </a>
-                <a href="/Barz/backend-php/demo-mvc/public/index.php" class="no-underline flex items-center gap-3 py-2.5 px-3.5 rounded-lg text-barz-muted-light text-[0.88rem] font-medium transition-all hover:bg-[rgba(136,144,99,.1)] hover:text-[#f5f0e8] hover:translate-x-0.5">
-                    <svg class="ic w-4.5 h-4.5 flex-none [fill:none] stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 9h8M8 13h5M8 17h8"/></svg>
-                    Demo MVC (Week 6)
-                </a>
                 <a href="/Barz/admin/barbers.php" data-nav="barbers" class="no-underline flex items-center gap-3 py-2.5 px-3.5 rounded-lg text-barz-muted-light text-[0.88rem] font-medium transition-all hover:bg-[rgba(136,144,99,.1)] hover:text-[#f5f0e8] hover:translate-x-0.5 [&.on]:bg-barz-accent [&.on]:text-white [&.on]:font-semibold [&.on]:shadow-[0_2px_8px_rgba(136,_144,_99,_.3)]">
                     <svg class="ic w-4.5 h-4.5 flex-none [fill:none] stroke-current stroke-2 [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     Barbers

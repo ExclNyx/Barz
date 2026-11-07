@@ -1,58 +1,78 @@
 # Panduan Demo Materi Week 1–7 pada Barz
 
-Panduan ini dipakai untuk menyiapkan demonstrasi source code dan hasil aplikasi. Setiap konsep harus ditunjukkan dari file yang benar-benar digunakan oleh fitur Barz.
+Panduan ini membantu menyiapkan demonstrasi source code dan hasil aplikasi. Tunjukkan hubungan **kode → konsep → hasil**, bukan hanya tampilan website.
 
 ## Persiapan sebelum merekam
 
-1. Pastikan repository di komputer sudah berisi versi kode terakhir yang akan didemokan.
-2. Jalankan XAMPP (Apache dan MySQL).
-3. Import `database/schema.sql` ke database `barz_booking`.
-4. Build CSS dengan `npm install` lalu `npm run css:build` bila perlu.
-5. Buat slot booking menggunakan `php generate_slots.php` dari terminal.
-6. Login sebagai admin.
-7. Untuk Week 7, jalankan Laravel API dari folder `api-server` dan pastikan `/api/health` membalas JSON `status: ok`.
+1. Pastikan repository di komputer sudah berisi kode terbaru yang akan didemokan.
+2. Jalankan Apache dan MySQL melalui XAMPP.
+3. Import `database/schema.sql` ke database `barz_booking` jika database belum tersedia.
+4. Cocokkan konfigurasi `includes/init.php` dengan MySQL lokal.
+5. Jalankan `npm install` dan `npm run css:build` jika dependency belum terpasang atau file styling berubah.
+6. Login sebagai admin untuk demo fitur Admin.
+7. Untuk Week 7, siapkan PHP 8.2+, Composer, file `.env` Laravel, dan Postman.
 
-## Bukti source dan hasil
+## Pemetaan source dan hasil
 
-| Materi | Buka file | Jelaskan | Tunjukkan hasil |
+| Week | Materi | Buka file | Tunjukkan hasil |
 |---|---|---|---|
-| Week 1 — HTML | `customer/pages/home.php`, `customer/pages/booking.php` | Struktur elemen, heading, form, input, button, tabel/kartu dan atribut | Homepage dan form booking di browser |
-| Week 2 — CSS | `src/css/tailwind.css`, `assets/css/tailwind.css` | Utility-first CSS, theme token, responsive breakpoint, hover/focus, proses build | Ubah ukuran browser dan tunjukkan tampilan responsif |
-| Week 3 — JavaScript | `assets/js/main.js`, `assets/js/api.js`, script pada booking page | DOM, event listener, submit, async/await, state loading, update DOM | Pilih layanan/tanggal/jam dan lihat perubahan pilihan/slot |
-| Week 4 — API | `assets/js/api.js`, `api/get_slots.php`, `api-server/routes/api.php` | HTTP request, GET/POST/PATCH/DELETE, JSON, status code, error dan fallback | Network tab browser atau Postman |
-| Week 5 — PHP + MySQL Native | `includes/init.php`, `includes/functions.php`, `auth/login.php`, `customer/pages/booking.php` | Session, MySQLi, prepared statement, SELECT/INSERT, validasi dan alur request | Login, buat booking, periksa hasil di halaman Booking Saya dan tabel MySQL |
-| Week 6 — OOP + MVC Manual | `backend-php/demo-mvc/public/index.php`, `controllers/ServiceController.php`, `models/ServiceModel.php`, `views/services/index.php` | Class/object, constructor, encapsulation, Model, Controller, View dan CSRF | Tambah layanan, edit, cari, aktif/nonaktif, hapus; periksa halaman layanan utama |
-| Week 7 — Laravel MVC | `api-server/routes/api.php`, `app/Http/Controllers/Api/`, `app/Models/`, `app/Http/Resources/`, `app/Http/Middleware/` | Route, Controller, Eloquent Model, Resource, Middleware, migration, validasi dan JWT | Jalankan request pada Postman; cek health, login, token, booking dan logout |
+| 1 | HTML | `customer/pages/home.php`, `customer/pages/booking.php` | Homepage dan form booking. Jelaskan elemen, atribut, form, input, tombol, dan struktur halaman. |
+| 2 | CSS | `src/css/tailwind.css`, `assets/css/tailwind.css` | Tunjukkan theme token, utility class, breakpoint responsive, hover/focus, lalu ubah lebar browser. |
+| 3 | JavaScript | `assets/js/main.js`, `assets/js/api.js`, script pada halaman booking | Tunjukkan event listener, DOM, validasi form, async/await, loading state, dan perubahan pilihan slot. |
+| 4 | API | `assets/js/api.js`, `api/get_slots.php`, `api-server/routes/api.php` | Tunjukkan request Fetch, method HTTP, JSON, status response, fallback, dan pengujian Postman. |
+| 5 | PHP + MySQL Native | `includes/init.php`, `includes/functions.php`, `auth/`, `customer/pages/booking.php`, `admin/` | Tunjukkan session, koneksi MySQLi, prepared statement, validasi, dan proses booking. Periksa hasil di phpMyAdmin. |
+| 6 | OOP + MVC Manual | `admin/services.php`, `admin/barbers.php`, `php-native/models/`, `php-native/controllers/Admin/`, `php-native/views/Admin/` | Tunjukkan tambah/edit/cari/status/hapus layanan dan barber. Jelaskan Class, Object, Constructor, Encapsulation, Model, Controller, dan View. |
+| 7 | Laravel MVC | `api-server/routes/api.php`, `api-server/app/Http/Controllers/Api/`, `api-server/app/Models/`, `api-server/app/Http/Resources/` | Jalankan Laravel API, lalu uji health, login/token, layanan, slot, booking, dan logout melalui Postman. |
 
-## Demonstrasi Week 6 secara berurutan
+## Week 6 — urutan demo OOP + MVC Manual
 
-1. Login admin di website Barz.
-2. Buka menu **Demo MVC (Week 6)**.
-3. Tunjukkan `public/index.php`: koneksi ke bootstrap database, pengecekan akses, pembuatan object Model dan Controller.
-4. Tunjukkan `ServiceController.php`: request/action, validasi input, CSRF, pemanggilan Model, redirect dan pemilihan View.
-5. Tunjukkan `ServiceModel.php`: constructor, property private, prepared statement `SELECT`, `INSERT`, dan `UPDATE`.
-6. Tunjukkan `views/services/index.php`: data dari Controller ditampilkan sebagai form dan tabel.
-7. Tambah satu layanan uji (misalnya `Demo Week 6`), cari, edit, nonaktifkan, lalu hapus kembali. Jika layanan sudah memiliki booking, fitur hapus hanya menonaktifkannya agar histori tetap aman.
-8. Buka halaman Layanan customer atau tabel `services` di phpMyAdmin untuk membuktikan bahwa data tersimpan pada database yang sama.
+Week 6 diterapkan pada dua fitur admin yang benar-benar digunakan Barz: **Kelola Layanan** dan **Kelola Barber**. Tidak ada halaman latihan terpisah.
 
-## Demonstrasi Week 7 menggunakan Postman
+1. Login sebagai admin.
+2. Buka menu **Layanan**. URL tetap `/Barz/admin/services.php`.
+3. Tunjukkan `admin/services.php`. File ini menyiapkan koneksi dan role, membuat objek Model dan Controller, lalu memanggil View.
+4. Tunjukkan `php-native/models/ServiceModel.php`. Jelaskan class, constructor, property `private $db`, dan method query yang mengelola tabel `services`.
+5. Tunjukkan `php-native/controllers/Admin/ServiceController.php`. Jelaskan bahwa Controller membaca request, memvalidasi input, memanggil Model, lalu menyiapkan data untuk View.
+6. Tunjukkan `php-native/views/Admin/services.php`. Jelaskan bahwa View berisi HTML/form/tabel dan tidak menjalankan query SQL.
+7. Uji tambah satu layanan dengan nama `Layanan Uji MVC`, cari, edit, nonaktifkan, lalu hapus jika belum pernah dipakai booking.
+8. Buka menu **Barbers**. Ulangi pola yang sama dengan `admin/barbers.php`, `BarberModel.php`, `BarberController.php`, dan `views/Admin/barbers.php`.
+9. Uji tambah barber dengan nama `Barber Uji MVC`, edit, cari, nonaktifkan, lalu hapus jika belum dipakai booking/jadwal/slot.
+10. Tunjukkan tabel `services` dan `barbers` di phpMyAdmin untuk membuktikan kedua fitur menggunakan database Barz yang sama.
 
-Urutan yang disarankan:
+### Cara menjelaskan alur MVC
 
-1. `GET /api/health`.
-2. `GET /api/services`.
-3. `GET /api/slots?service_id=1&date=YYYY-MM-DD` dengan tanggal yang masih berada dalam periode slot yang dibuat.
-4. `POST /api/auth/login` dengan akun admin hasil seeder; collection menyimpan `access_token` ke variabel `token`.
-5. `GET /api/auth/me` untuk membuktikan token valid.
-6. `POST /api/bookings` untuk membuat booking; collection menyimpan ID booking ke `bookingId`.
-7. `GET /api/bookings` untuk melihat booking.
-8. `PATCH /api/admin/bookings/{{bookingId}}/status` untuk mengubah status.
-9. `POST /api/auth/logout` untuk menginvalidasi token; collection menghapus variabel token.
+Contoh ketika admin menambah layanan:
 
-Gunakan tanggal booking ke depan dan pastikan barber memiliki slot aktif. Untuk pengujian yang berulang, gunakan akun dan data demo lokal.
+1. **Entry point:** browser membuka `admin/services.php`.
+2. **Controller:** `ServiceController` menerima data form dan memeriksa validitasnya.
+3. **Model:** `ServiceModel` menjalankan prepared statement `INSERT` ke tabel `services`.
+4. **Controller:** menyimpan pesan hasil dan mengarahkan kembali ke halaman layanan.
+5. **View:** `views/Admin/services.php` menampilkan tabel layanan yang sudah diperbarui.
 
-## Materi yang jangan dicampur
+### Konsep OOP yang perlu disebutkan
 
-- Week 5 adalah PHP Native + MySQLi pada halaman utama Barz.
-- Week 6 adalah implementasi OOP + MVC manual di `backend-php/demo-mvc/`. Jangan menjelaskan Laravel sebagai bukti tunggal MVC manual.
-- Week 7 adalah Laravel MVC pada `api-server/`.
+- **Class:** `ServiceModel` adalah cetak biru objek yang mengelompokkan properti dan method untuk data layanan.
+- **Object:** `new ServiceModel(getDB())` membuat objek dari class tersebut.
+- **Constructor:** `__construct(mysqli $db)` menerima koneksi ketika objek dibuat.
+- **Encapsulation:** property `$db` dibuat `private`, sehingga tidak diakses langsung dari luar class.
+- **Method:** `getAll()`, `create()`, `update()`, dan `deleteSafely()` adalah operasi milik Model.
+- **Dependency injection sederhana:** Controller menerima Model melalui constructor, sehingga Controller tidak perlu membuat query database sendiri.
+
+## Week 7 — urutan demo Laravel MVC
+
+1. Jalankan backend dari folder `api-server`.
+2. Tunjukkan `routes/api.php` untuk menjelaskan endpoint.
+3. Tunjukkan satu Controller, misalnya `BookingController.php`, untuk menjelaskan penerimaan request, validasi, dan alur proses.
+4. Tunjukkan `Booking.php` atau `Service.php` pada `app/Models/` untuk menjelaskan Eloquent ORM dan relasi data.
+5. Tunjukkan `BookingResource.php` untuk menjelaskan pembentukan response JSON.
+6. Tunjukkan middleware auth/role bila menjelaskan pembatasan akses.
+7. Uji endpoint dengan Postman.
+
+Week 7 sudah memiliki source Laravel, tetapi jangan menyatakan runtime berhasil sebelum server lokal benar-benar berjalan dan request Postman mendapat hasil yang diharapkan.
+
+## Catatan agar penjelasan tidak tertukar
+
+- Week 5 adalah PHP Native + MySQLi yang digunakan oleh website utama.
+- Week 6 adalah OOP + MVC Manual PHP Native untuk Admin > Layanan dan Admin > Barbers. Kodenya berada di `php-native/`, bukan `api-server/app/`.
+- Week 7 adalah Laravel MVC untuk backend REST API di `api-server/`.
+- Tidak semua halaman Admin lama sudah dipindahkan ke MVC Manual. Untuk Week 6, jelaskan dua fitur yang memang sudah memakai pola tersebut.

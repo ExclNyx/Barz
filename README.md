@@ -11,7 +11,7 @@ Website booking barbershop berbasis PHP Native + MySQLi, Tailwind CSS v4, JavaSc
 | 3 | JavaScript | `assets/js/main.js`, `assets/js/api.js`, event handler pada halaman booking |
 | 4 | API | `fetch`, async/await, JSON, REST endpoint PHP/Laravel, error handling dan Postman |
 | 5 | PHP + MySQL Native | `includes/`, `auth/`, `api/`, `admin/`, `database/schema.sql` |
-| 6 | OOP + MVC Manual | `backend-php/demo-mvc/` — Model, Controller, View menggunakan PHP Native + MySQLi |
+| 6 | OOP + MVC Manual | `admin/services.php`, `admin/barbers.php`, dan folder `php-native/` — fitur Kelola Layanan dan Barber memakai MVC manual |
 | 7 | Laravel MVC | `api-server/` — Routes, Controllers, Eloquent Models, Resources, Middleware dan JWT |
 
 Pemetaan file lengkap tersedia di [`docs/MODUL_MAPPING.md`](docs/MODUL_MAPPING.md).
@@ -19,7 +19,7 @@ Pemetaan file lengkap tersedia di [`docs/MODUL_MAPPING.md`](docs/MODUL_MAPPING.m
 ## 2. Persyaratan
 
 - XAMPP dengan Apache dan MySQL aktif.
-- PHP 8.2 atau lebih baru untuk backend Laravel 12. Website PHP Native dan demo MVC manual dapat dijalankan melalui XAMPP.
+- PHP 8.2 atau lebih baru untuk backend Laravel 12. Website PHP Native beserta fitur MVC manual dapat dijalankan melalui XAMPP.
 - Composer 2.x.
 - Node.js dan npm untuk build Tailwind CSS.
 - Postman untuk menguji REST API.
@@ -55,17 +55,21 @@ Pemetaan file lengkap tersedia di [`docs/MODUL_MAPPING.md`](docs/MODUL_MAPPING.m
 
 `generate_slots.php` hanya dapat dijalankan melalui terminal karena script tersebut membuat ulang slot booking.
 
-## 4. Menjalankan demo Week 6 — OOP + MVC Manual
+## 4. Week 6 — OOP + MVC Manual pada fitur Kelola Layanan dan Barber
 
-1. Login ke website menggunakan akun admin.
-2. Buka menu **Demo MVC (Week 6)** dari sidebar admin, atau akses:
+Week 6 diterapkan langsung pada dua fitur yang memang digunakan Barz, yaitu **Admin > Layanan** dan **Admin > Barbers**, bukan halaman demo terpisah. URL tetap `http://localhost/Barz/admin/services.php` dan `http://localhost/Barz/admin/barbers.php`.
 
-   `http://localhost/Barz/backend-php/demo-mvc/public/`
+Struktur implementasi:
 
-3. Tambahkan layanan, cari, edit, ubah status, lalu hapus layanan uji. Layanan yang sudah memiliki riwayat booking akan dinonaktifkan agar histori tetap aman.
-4. Perubahan menggunakan tabel `services` yang sama dengan website Barz.
+- `admin/services.php` — entry point/rute halaman dan pemanggil Controller.
+- `php-native/models/ServiceModel.php` dan `BarberModel.php` — class Model, constructor, property private, dan operasi MySQLi untuk tabel `services` serta `barbers`.
+- `php-native/controllers/Admin/ServiceController.php` dan `BarberController.php` — class Controller yang menangani request, validasi, CSRF, flash message, dan penyiapan data View.
+- `php-native/views/Admin/services.php` dan `barbers.php` — tampilan daftar, pencarian, tambah, edit, aktif/nonaktif, dan hapus.
+- `includes/init.php` — koneksi MySQLi yang sudah digunakan aplikasi Barz; MVC memakai `getDB()` dari sini.
 
-Dokumentasi konsep dan struktur tersedia di [`backend-php/demo-mvc/README.md`](backend-php/demo-mvc/README.md). Bagian ini tidak membutuhkan Laravel atau Composer.
+Tidak ada database baru. Model menggunakan tabel `services` dan `barbers` pada database `barz_booking` yang sama dengan halaman customer dan fitur booking. Layanan yang sudah memiliki riwayat booking akan dinonaktifkan, bukan dihapus, agar histori tetap aman.
+
+Untuk demo, login sebagai admin lalu buka menu **Layanan** dan **Barbers**. Coba tambah data uji, edit, cari, ubah status, dan hapus kembali. Tunjukkan entry point, file Model, Controller, dan View ketika menjelaskan pola MVC. Penjelasan rinci tersedia di `docs/WEEK6_MVC_GUIDE.md`, sedangkan urutan demonstrasi Week 1–7 tersedia di `docs/WEEK1-7_DEMO.md`.
 
 ## 5. Menjalankan backend Laravel — Week 7
 
