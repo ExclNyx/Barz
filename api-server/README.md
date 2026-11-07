@@ -13,7 +13,8 @@ Folder ini adalah backend API terpisah untuk melengkapi website PHP native Barz.
 1. Jalankan **Apache** dan **MySQL** dari XAMPP.
 2. Buka `http://localhost/phpmyadmin`, buat/import database `barz_booking` memakai `../database/schema.sql`.
 3. Buka terminal VS Code di folder `Barz/api-server`.
-4. Jalankan:
+4. Pastikan PHP CLI yang dipakai Composer minimal 8.2 (`php -v`). Jika PowerShell masih memakai PHP XAMPP 7.4 dan PHP 8.3 tersedia di `C:\php83`, jalankan `$env:Path = "C:\php83;" + $env:Path`, lalu pastikan versinya sudah berubah.
+5. Jalankan:
 
    ```powershell
    composer install
@@ -25,9 +26,9 @@ Folder ini adalah backend API terpisah untuk melengkapi website PHP native Barz.
    php artisan serve --host=127.0.0.1 --port=8000
    ```
 
-5. Pastikan `.env` mengarah ke MySQL XAMPP (`DB_HOST=127.0.0.1`, `DB_DATABASE=barz_booking`, `DB_USERNAME=root`; password disesuaikan dengan XAMPP).
-6. Cek API: `http://127.0.0.1:8000/api/health`.
-7. Import `docs/Barz-API.postman_collection.json` ke Postman. Base URL sudah diset ke `http://127.0.0.1:8000/api`.
+6. Pastikan `.env` mengarah ke MySQL XAMPP (`DB_HOST=127.0.0.1`, `DB_DATABASE=barz_booking`, `DB_USERNAME=root`; password disesuaikan dengan XAMPP).
+7. Cek API: `http://127.0.0.1:8000/api/health`.
+8. Import `docs/Barz-API.postman_collection.json` ke Postman. Base URL sudah diset ke `http://127.0.0.1:8000/api`.
 
 > Composer/vendor tidak ikut dikemas. Jalankan `composer install` di komputer lokal agar dependency Laravel/JWT terpasang. Kode scaffold sudah disediakan, tetapi API tidak dapat dijalankan dari lingkungan pembuatan ZIP karena Composer/dependency tidak tersedia di sini.
 
@@ -37,6 +38,7 @@ Folder ini adalah backend API terpisah untuk melengkapi website PHP native Barz.
 |---|---|---|---|
 | GET | `/api/health` | Publik | Cek server hidup |
 | GET | `/api/services` | Publik | Daftar layanan aktif |
+| GET | `/api/services/{id}` | Publik | Detail layanan aktif |
 | POST | `/api/auth/register` | Publik | Registrasi customer |
 | POST | `/api/auth/login` | Publik | Login, mengembalikan JWT |
 | GET | `/api/auth/me` | JWT | Profil token aktif |
@@ -50,13 +52,13 @@ Folder ini adalah backend API terpisah untuk melengkapi website PHP native Barz.
 | DELETE | `/api/admin/services/{id}` | Admin/Super Admin | Hapus/nonaktifkan layanan |
 | PATCH | `/api/admin/bookings/{id}/status` | Admin/Super Admin | Ubah status booking |
 
-Login menghasilkan `access_token`; pakai header `Authorization: Bearer <token>` pada endpoint yang dilindungi. Validasi Laravel memakai status HTTP `422` dengan field `errors`, sesuai pola penanganan error Modul 4 dan 6.
+Login menghasilkan `access_token`; pakai header `Authorization: Bearer <token>` pada endpoint yang dilindungi. Logout memanggil blacklist JWT. Validasi Laravel memakai status HTTP `422` dengan field `errors`. Proses pembuatan booking menggunakan transaksi database dan pemeriksaan bentrok waktu sebelum menyimpan booking.
 
 ## Demo credentials
 
-Seeder menyiapkan ulang akun admin demo agar kredensial berikut bisa diuji:
+Pada database baru, seeder membuat akun demo berikut. Jika akun sudah ada, seeder hanya memperbarui nama, telepon, dan role; password yang sudah ada tidak di-reset:
 
-- Admin: `admin@barz.com` / `barz2024`
+- Admin: `admin@barz.com` / `admin123`
 - Super Admin: `superadmin@barz.com` / `superadmin`
 
 Jangan gunakan password demo pada deployment publik.

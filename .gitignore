@@ -49,6 +49,7 @@ Thumbs.db
 # Composer
 composer.phar
 composer.lock
+!/api-server/composer.lock
 
 # Testing & Coverage
 /coverage/
@@ -56,4 +57,4 @@ composer.lock
 
 # Misc
 *.pid
-*.lock
+*.lock!/api-server/composer.lock

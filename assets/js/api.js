@@ -195,9 +195,38 @@
         }
     }
 
-    // Clear JWT when the existing PHP session is logged out.
+    // Invalidate the Laravel JWT before the legacy PHP session is destroyed.
+    // If the API is unavailable, clear the browser token and continue with PHP logout.
     document.querySelectorAll('a[href*="/auth/logout.php"]').forEach(function (link) {
-        link.addEventListener('click', clearToken);
+        link.addEventListener('click', async function (event) {
+            var currentToken = token();
+            if (!currentToken || link.dataset.logoutStarted === '1') {
+                clearToken();
+                return;
+            }
+
+            event.preventDefault();
+            link.dataset.logoutStarted = '1';
+            try {
+                await Promise.race([
+                    request('/auth/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': 'Bearer ' + currentToken
+                        }
+                    }),
+                    new Promise(function (resolve) {
+                        window.setTimeout(resolve, 1500);
+                    })
+                ]);
+            } catch (error) {
+                // PHP session logout must still work even when the Laravel API is offline.
+            }
+
+            clearToken();
+            window.location.assign(link.href);
+        });
     });
 
     window.BarzAPI = { request: request, fetchSlots: fetchSlots, getToken: token, clearToken: clearToken };

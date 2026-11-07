@@ -1,58 +1,75 @@
-# Barz Barbershop — disesuaikan dengan Modul Praktikum 0–6
+# Barz Barbershop
 
-Project Barz tetap memakai domain, desain, halaman, dan alur bisnis barbershop milik project asli; project FlipPlay tidak disalin. Yang diselaraskan adalah **tools dan pola implementasi** dari modul praktikum: XAMPP/MySQL, Tailwind CSS v4 utility-first, JavaScript event + Fetch API, PHP OOP, REST API Laravel, validasi, JWT, CORS, dan Postman.
+Website booking barbershop berbasis PHP Native + MySQLi, Tailwind CSS v4, JavaScript Fetch API, dan backend REST API Laravel 12 + JWT. Project mempertahankan alur customer, admin, booking, layanan, barber, dan chat yang sudah ada.
 
-## 1. Struktur penting
+## 1. Pemetaan materi Week 1–7
 
-```text
-Barz/
-├── index.php / customer/ / admin/ / superadmin/   # website PHP yang sudah ada
-├── assets/
-│   ├── css/tailwind.css                           # hasil build Tailwind (dipakai browser)
-│   └── js/api.js                                  # fetch + JWT + integrasi Laravel API
-├── src/css/tailwind.css                           # sumber Tailwind, hanya @import dan @theme
-├── api/                                           # endpoint PHP lama untuk fallback XAMPP
-├── database/schema.sql                            # schema MySQL; role dapat menyimpan super_admin
-├── package.json                                   # scripts build/watch Tailwind CLI v4
-└── api-server/                                    # source backend Laravel 12 + JWT + Postman collection
-```
+| Week | Materi | Bukti kode di Barz |
+|---|---|---|
+| 1 | HTML | `index.php`, `customer/pages/`, `admin/`, form dan tabel HTML |
+| 2 | CSS | `src/css/tailwind.css` dan hasil build `assets/css/tailwind.css` |
+| 3 | JavaScript | `assets/js/main.js`, `assets/js/api.js`, event handler pada halaman booking |
+| 4 | API | `fetch`, async/await, JSON, REST endpoint PHP/Laravel, error handling dan Postman |
+| 5 | PHP + MySQL Native | `includes/`, `auth/`, `api/`, `admin/`, `database/schema.sql` |
+| 6 | OOP + MVC Manual | `backend-php/demo-mvc/` — Model, Controller, View menggunakan PHP Native + MySQLi |
+| 7 | Laravel MVC | `api-server/` — Routes, Controllers, Eloquent Models, Resources, Middleware dan JWT |
 
-Tidak ada `tailwind.php`, `style.css`, atau `admin.css` lagi. File `assets/css/tailwind.css` adalah output build statis Tailwind; elemen PHP/HTML langsung memakai utility class seperti `flex`, `grid`, `p-4`, `rounded-2xl`, `bg-barz-accent`, `md:grid-cols-2`, dan `hover:...`. `src/css/tailwind.css` hanya berisi directive import dan theme token Tailwind—bukan kumpulan selector CSS buatan sendiri.
+Pemetaan file lengkap tersedia di [`docs/MODUL_MAPPING.md`](docs/MODUL_MAPPING.md).
 
-## 2. Menjalankan website di XAMPP
+## 2. Persyaratan
+
+- XAMPP dengan Apache dan MySQL aktif.
+- PHP 8.2 atau lebih baru untuk backend Laravel 12. Website PHP Native dan demo MVC manual dapat dijalankan melalui XAMPP.
+- Composer 2.x.
+- Node.js dan npm untuk build Tailwind CSS.
+- Postman untuk menguji REST API.
+
+## 3. Menjalankan website PHP Native
 
 1. Ekstrak folder `Barz` ke `C:\xampp\htdocs\Barz`.
-2. Buka XAMPP Control Panel, nyalakan **Apache** dan **MySQL**.
-3. Buka phpMyAdmin di `http://localhost/phpmyadmin` dan import `database/schema.sql`.
-   - Jika database Barz sebelumnya sudah ada dengan `users.role` berbentuk ENUM, jalankan SQL ini sekali agar `super_admin` dapat disimpan:
+2. Nyalakan Apache dan MySQL di XAMPP.
+3. Buka phpMyAdmin, buat/import database `barz_booking` menggunakan `database/schema.sql`.
+4. Pastikan konfigurasi database pada `includes/init.php` sesuai dengan XAMPP lokal (`localhost`, user `root`, password sesuai setup MySQL).
+5. Build CSS jika dependency belum tersedia atau ada perubahan utility class:
 
-   ```sql
-   ALTER TABLE users MODIFY role VARCHAR(30) NOT NULL DEFAULT 'customer';
+   ```powershell
+   npm install
+   npm run css:build
    ```
-4. Buka `http://localhost/Barz/create_admin.php` sekali untuk memastikan akun admin demo dibuat, lalu hapus/nonaktifkan file itu sebelum deployment.
-5. Jalankan `http://localhost/Barz/generate_slots.php` untuk membuat jadwal slot 30 hari ke depan.
-6. Buka website melalui `http://localhost/Barz`.
 
-## 3. Build Tailwind CSS v4 (sesuai Modul 1)
+6. Untuk demo lokal, buat atau samakan password akun admin melalui terminal lokal. Perintah ini membuat akun jika belum ada atau meresetnya jika sudah ada:
 
-Node.js dan npm harus terpasang. Dari terminal di folder `C:\xampp\htdocs\Barz`:
+   ```powershell
+   php create_admin.php admin@barz.com "admin123" "Admin Barz" 081234567890 --reset
+   ```
 
-```powershell
-npm install
-npm run css:build
-```
+   Password `admin123` hanya untuk database demo lokal. Ganti dengan password kuat sebelum deployment.
 
-Untuk melihat perubahan utility class sambil bekerja:
+7. Buat jadwal slot dari terminal pada root project:
 
-```powershell
-npm run css:watch
-```
+   ```powershell
+   php generate_slots.php
+   ```
 
-Hasil compile masuk ke `assets/css/tailwind.css`. File hasil build sudah disertakan di ZIP supaya halaman bisa memakai file CSS statis. Jika kamu mengubah utility class PHP/HTML, jalankan `npm run css:build` lagi. Tailwind v4 menggunakan CLI; tidak ada runtime CDN yang perlu mengompilasi halaman ketika dibuka.
+8. Buka `http://localhost/Barz`.
 
-## 4. Menjalankan Laravel API (sesuai Modul 4–6)
+`generate_slots.php` hanya dapat dijalankan melalui terminal karena script tersebut membuat ulang slot booking.
 
-Ikuti instruksi di [`api-server/README.md`](api-server/README.md). Ringkasnya:
+## 4. Menjalankan demo Week 6 — OOP + MVC Manual
+
+1. Login ke website menggunakan akun admin.
+2. Buka menu **Demo MVC (Week 6)** dari sidebar admin, atau akses:
+
+   `http://localhost/Barz/backend-php/demo-mvc/public/`
+
+3. Tambahkan layanan, cari, edit, ubah status, lalu hapus layanan uji. Layanan yang sudah memiliki riwayat booking akan dinonaktifkan agar histori tetap aman.
+4. Perubahan menggunakan tabel `services` yang sama dengan website Barz.
+
+Dokumentasi konsep dan struktur tersedia di [`backend-php/demo-mvc/README.md`](backend-php/demo-mvc/README.md). Bagian ini tidak membutuhkan Laravel atau Composer.
+
+## 5. Menjalankan backend Laravel — Week 7
+
+Website PHP Native dan Laravel API menggunakan database MySQL yang sama (`barz_booking`). Laravel berjalan sebagai server API terpisah. Sebelum menjalankan Composer dan Artisan, pastikan `php -v` menunjukkan PHP 8.2 atau lebih baru. Jika perlu, ikuti pengaturan PATH pada [`api-server/README.md`](api-server/README.md).
 
 ```powershell
 cd C:\xampp\htdocs\Barz\api-server
@@ -65,22 +82,28 @@ php artisan storage:link
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-API berjalan terpisah di `http://127.0.0.1:8000/api`. Website di XAMPP tetap di `http://localhost/Barz`. Keduanya memakai database `barz_booking` yang sama. Uji API di Postman memakai collection `api-server/docs/Barz-API.postman_collection.json`.
+Sesuaikan `.env` dengan database MySQL XAMPP. Setelah server berjalan, periksa:
 
-**Catatan:** dependency Composer tidak dibundel. Jalankan `composer install` di komputer kamu sebelum menjalankan Laravel. API scaffold telah ditambahkan dan PHP syntax-nya dicek, tetapi proses runtime Laravel/JWT perlu diverifikasi setelah dependency dipasang di lingkungan lokal.
+`http://127.0.0.1:8000/api/health`
 
-## 5. Pemetaan ke modul
+Import collection `api-server/docs/Barz-API.postman_collection.json` ke Postman. Collection tersebut berisi request untuk health check, layanan, slot, login, JWT, booking, dan operasi admin.
 
-| Modul | Implementasi di Barz |
-|---|---|
-| 0 — Setup | XAMPP (Apache/MySQL), Node/npm, Composer, Postman; project diletakkan di `htdocs` |
-| 1 — Tailwind v4 | Utility-first class langsung di PHP/HTML, responsive utilities, build CLI ke `.css` statis |
-| 2 — JavaScript & API | Event listeners, async `fetch`, JSON, REST method, fallback dan error handling |
-| 3 — PHP OOP | Laravel Models, Controllers, Resources, Middleware; native PHP lama dijaga agar aplikasi tetap kompatibel |
-| 4 — Laravel REST API | Route/controller/resource, CRUD layanan dan booking, MySQL/Eloquent, validasi request |
-| 5 — JWT & upload | JWT Bearer Token, middleware role, CORS, unggah gambar layanan ke public storage |
-| 6 — Frontend integration | `assets/js/api.js` memanggil login, slot, dan booking API; menangani status `422`; fallback ke PHP jika API mati |
+Pada database baru, akun demo yang dibuat oleh seeder:
 
-## 6. Catatan database dan akun demo
+- Admin: `admin@barz.com` / `admin123`
+- Super Admin: `superadmin@barz.com` / `superadmin`
 
-Database `barz_booking` dipakai bersama oleh website PHP dan Laravel API. Kredensial demo yang dipakai README API adalah `admin@barz.com / barz2024` dan `superadmin@barz.com / superadmin` setelah seeding. Hindari menggunakan data/demo password ini di internet.
+Seeder tidak mengubah password akun yang sudah ada. Gunakan password demo hanya untuk pengujian lokal dan ganti sebelum deployment.
+
+## 6. Alur integrasi frontend dan API
+
+- Login dan registrasi mencoba menggunakan Laravel API terlebih dahulu.
+- Login API menyimpan JWT pada `sessionStorage`; autentikasi sesi website tetap dilakukan oleh PHP Native.
+- Halaman booking mencoba mengirim booking ke Laravel jika JWT tersedia.
+- Slot waktu diambil dari Laravel API dan memiliki fallback ke endpoint PHP Native.
+- Logout mencoba menginvalidasi JWT Laravel, kemudian menghapus token browser dan mengakhiri sesi PHP.
+- Jika Laravel tidak berjalan, website masih dapat menggunakan alur PHP Native yang lama.
+
+## 7. Batasan pengujian
+
+Source code PHP dan JavaScript dapat diperiksa sintaksnya secara lokal. Untuk memastikan Week 7 berfungsi penuh, dependency Laravel harus dipasang dan API harus diuji terhadap MySQL XAMPP menggunakan Postman. File `.env`, `vendor/`, dan kredensial lokal tidak disertakan dalam repository.

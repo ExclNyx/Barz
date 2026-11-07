@@ -143,7 +143,7 @@ CREATE TABLE settings (
 
 -- Insert default admin user (password: admin123)
 INSERT INTO users (name, email, phone, password, role) VALUES
-('Admin', 'admin@barz.com', '081234567890', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+('Admin', 'admin@barz.com', '081234567890', '$2y$12$ZVTZCf0YmUyucP/sdee9DeVlqU3P1V85IFvz3VqUldNAEW.ZV3lLG' , 'admin');
 
 -- Insert sample services
 INSERT INTO services (name, description, price, duration, is_active) VALUES

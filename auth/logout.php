@@ -1,5 +1,22 @@
 <?php
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+$_SESSION = [];
+
+if (ini_get('session.use_cookies')) {
+    $cookie = session_get_cookie_params();
+    setcookie(session_name(), '', [
+        'expires' => time() - 42000,
+        'path' => $cookie['path'],
+        'domain' => $cookie['domain'],
+        'secure' => $cookie['secure'],
+        'httponly' => $cookie['httponly'],
+        'samesite' => $cookie['samesite'] ?? 'Lax',
+    ]);
+}
+
 session_destroy();
-header('Location: /Barz/index.php?page=home');
+header('Location: /Barz/index.php?area=customer&page=home');
 exit;

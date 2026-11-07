@@ -1,65 +1,56 @@
 <?php
-// Script untuk buat admin baru
-// Jalankan sekali via browser: http://localhost/Barz/create_admin.php
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "barz_booking";
-
-// Credentials admin baru
-$admin_name = "Admin Barz";
-$admin_email = "admin@barz.com";
-$admin_phone = "081234567890";
-$admin_password = "barz2024"; // Password plaintext - akan di-hash otomatis
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+/**
+ * Local CLI utility to create an admin without exposing a password-reset URL.
+ * Usage: php create_admin.php admin@barz.com 'strong-password' 'Admin Barz' 081234567890 [--reset]
+ */
+if (PHP_SAPI !== 'cli') {
+    http_response_code(403);
+    exit('Script setup admin hanya boleh dijalankan melalui terminal.');
 }
 
-// Hash password
-$hashed_password = password_hash($admin_password, PASSWORD_BCRYPT);
+require_once __DIR__ . '/includes/init.php';
 
-// Cek apakah email sudah ada
-$check_sql = "SELECT id FROM users WHERE email = ?";
-$stmt = $conn->prepare($check_sql);
-$stmt->bind_param("s", $admin_email);
-$stmt->execute();
-$result = $stmt->get_result();
+$email = strtolower(trim((string) ($argv[1] ?? '')));
+$plainPassword = (string) ($argv[2] ?? '');
+$name = trim((string) ($argv[3] ?? 'Admin Barz'));
+$phone = trim((string) ($argv[4] ?? ''));
+$resetExisting = ($argv[5] ?? '') === '--reset';
 
-if ($result->num_rows > 0) {
-    // Update existing admin
-    $update_sql = "UPDATE users SET name = ?, phone = ?, password = ?, role = 'admin' WHERE email = ?";
-    $stmt = $conn->prepare($update_sql);
-    $stmt->bind_param("ssss", $admin_name, $admin_phone, $hashed_password, $admin_email);
-    
-    if ($stmt->execute()) {
-        echo "✅ Admin berhasil diupdate!<br><br>";
-    } else {
-        echo "❌ Error update: " . $stmt->error . "<br>";
+if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($plainPassword) < 8 || $name === '') {
+    fwrite(STDERR, "Penggunaan: php create_admin.php email password-min-8-karakter [nama] [telepon] [--reset]" . PHP_EOL);
+    exit(1);
+}
+
+$db = getDB();
+$check = $db->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
+$check->bind_param('s', $email);
+$check->execute();
+$existingUser = $check->get_result()->fetch_assoc();
+$check->close();
+
+$hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
+$role = 'admin';
+
+if ($existingUser) {
+    if (!$resetExisting) {
+        fwrite(STDERR, "Email sudah terdaftar. Tambahkan --reset jika memang ingin mengganti password dan memastikan role admin." . PHP_EOL);
+        exit(2);
     }
+
+    $statement = $db->prepare('UPDATE users SET name = ?, phone = ?, password = ?, role = ? WHERE id = ?');
+    $userId = (int) $existingUser['id'];
+    $statement->bind_param('ssssi', $name, $phone, $hashedPassword, $role, $userId);
+    $successMessage = 'Password dan role akun admin berhasil diperbarui untuk ' . $email;
 } else {
-    // Insert new admin
-    $insert_sql = "INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, 'admin')";
-    $stmt = $conn->prepare($insert_sql);
-    $stmt->bind_param("ssss", $admin_name, $admin_email, $admin_phone, $hashed_password);
-    
-    if ($stmt->execute()) {
-        echo "✅ Admin baru berhasil dibuat!<br><br>";
-    } else {
-        echo "❌ Error insert: " . $stmt->error . "<br>";
-    }
+    $statement = $db->prepare('INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, ?)');
+    $statement->bind_param('sssss', $name, $email, $phone, $hashedPassword, $role);
+    $successMessage = 'Akun admin berhasil dibuat untuk ' . $email;
 }
 
-echo "<strong>Login Credentials:</strong><br>";
-echo "Email: " . $admin_email . "<br>";
-echo "Password: " . $admin_password . "<br><br>";
-echo "<em>Simpan credentials ini dan hapus file create_admin.php setelah selesai!</em>";
+if (!$statement->execute()) {
+    fwrite(STDERR, 'Operasi akun admin gagal: ' . $statement->error . PHP_EOL);
+    exit(1);
+}
 
-$stmt->close();
-$conn->close();
-?>
+fwrite(STDOUT, $successMessage . PHP_EOL);
+$statement->close();

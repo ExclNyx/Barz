@@ -18,6 +18,9 @@ class SlotController extends Controller
         $slots = [];
         foreach ($slotStarts as $rawStart) {
             $start = substr((string) $rawStart, 0, 5);
+            if ($data['date'] === now()->toDateString() && $start <= now()->format('H:i')) {
+                continue;
+            }
             $end = date('H:i', strtotime($start) + $duration * 60);
             $eligible = DB::table('barbers')->where('is_active', 1);
             if (!empty($data['barber_id'])) $eligible->where('id', $data['barber_id']);
