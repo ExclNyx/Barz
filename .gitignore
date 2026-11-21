@@ -35,8 +35,7 @@ Thumbs.db
 *.bak
 .cache/
 
-# Uploads & Storage (if any)
-/storage/
+# Uploads (if any)
 /public/uploads/
 /assets/uploads/
 
@@ -46,10 +45,8 @@ Thumbs.db
 /public/assets/*.min.css
 /public/assets/*.min.js
 
-# Composer
+# Composer (composer.lock sengaja ikut di-commit)
 composer.phar
-composer.lock
-!/api-server/composer.lock
 
 # Testing & Coverage
 /coverage/
@@ -57,4 +54,9 @@ composer.lock
 
 # Misc
 *.pid
-*.lock!/api-server/composer.lock
+
+# Laravel
+/bootstrap/cache/*.php
+/storage/*.key
+/public/storage
+/public/hot

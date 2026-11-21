@@ -1,0 +1,10 @@
+# Barz - blokir akses web ke file/folder internal (Laravel, config, dokumen).
+# Halaman website (admin/, auth/, api/, customer/, superadmin/, assets/, index.php) tetap bisa dibuka.
+<IfModule mod_alias.c>
+    RedirectMatch 404 ^/[^/]+/(\.env[^/]*|\.git[^/]*|vendor|node_modules|app|bootstrap|routes|storage|config|database|docs|includes|php-native|src|artisan|composer\.[^/]+|package[^/]*\.json)(/|$)
+</IfModule>
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.(md|lock|log|sql|ini)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>

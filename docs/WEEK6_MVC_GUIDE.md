@@ -35,7 +35,7 @@ includes/
 └── init.php           # session, helper, dan koneksi MySQLi
 ```
 
-Folder `php-native/` sengaja berbeda dari `api-server/app/`. `php-native/` adalah kode PHP Native untuk Week 6, sedangkan `api-server/app/` adalah kode Laravel untuk Week 7.
+Folder `php-native/` sengaja berbeda dari `app/`. `php-native/` adalah kode PHP Native untuk Week 6, sedangkan `app/` adalah kode Laravel untuk Week 7.
 
 ## Arti MVC dalam fitur Barz
 

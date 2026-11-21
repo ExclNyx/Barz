@@ -12,12 +12,12 @@ Browser
   |     +-- includes/init.php   -> koneksi MySQLi
   |
   +-- Fetch API (fitur yang terhubung ke API)
-        +-- api-server/routes/api.php
+        +-- routes/api.php
               -> Laravel Controller
               -> Eloquent Model
-              -> MySQL melalui api-server/.env
+              -> MySQL melalui .env
 ```
 
-**PHP Native MVC (Week 6)** diterapkan pada fitur admin layanan dan barber. Folder kodenya `php-native/` agar tidak tertukar dengan `api-server/app/` milik Laravel.
+**PHP Native MVC (Week 6)** diterapkan pada fitur admin layanan dan barber. Folder kodenya `php-native/` agar tidak tertukar dengan `app/` milik Laravel.
 
-**Laravel MVC (Week 7)** berada di `api-server/`. Laravel menerima request API dan mengembalikan JSON. `database/schema.sql` adalah skrip pembuatan skema, bukan konfigurasi koneksi runtime.
+**Laravel MVC (Week 7)** berada di `app/`, `routes/`, `bootstrap/`, dan `config/` pada root project. Laravel menerima request API dan mengembalikan JSON. `database/schema.sql` adalah skrip pembuatan skema, bukan konfigurasi koneksi runtime.

@@ -12,9 +12,26 @@ Website booking barbershop berbasis PHP Native + MySQLi, Tailwind CSS v4, JavaSc
 | 4 | API | `fetch`, async/await, JSON, REST endpoint PHP/Laravel, error handling dan Postman |
 | 5 | PHP + MySQL Native | `includes/`, `auth/`, `api/`, `admin/`, `database/schema.sql` |
 | 6 | OOP + MVC Manual | `admin/services.php`, `admin/barbers.php`, dan folder `php-native/` — fitur Kelola Layanan dan Barber memakai MVC manual |
-| 7 | Laravel MVC | `api-server/` — Routes, Controllers, Eloquent Models, Resources, Middleware dan JWT |
+| 7 | Laravel MVC | `routes/api.php`, `app/`, `database/migrations/` — Routes, Controllers, Eloquent Models, Resources, Middleware dan JWT |
 
 Pemetaan file lengkap tersedia di [`docs/MODUL_MAPPING.md`](docs/MODUL_MAPPING.md).
+
+## Struktur folder
+
+```text
+Barz/
+|-- index.php, create_admin.php, generate_slots.php   Website PHP Native (Week 1-5)
+|-- admin/  auth/  api/  customer/  superadmin/       Halaman dan endpoint PHP Native
+|-- includes/                                         Koneksi MySQLi, session, helper
+|-- php-native/                                       OOP + MVC manual (Week 6): models/ controllers/ views/
+|-- assets/  src/                                     CSS (Tailwind v4) dan JavaScript
+|-- app/  routes/  bootstrap/  config/  public/       Laravel 12 REST API + JWT (Week 7)
+|-- database/                                         schema.sql (MySQL), migrations/, seeders/
+|-- storage/                                          Laravel (log, cache, upload)
+|-- docs/                                             Dokumen, panduan demo, Postman collection
+|-- composer.json, artisan, .env.example              Konfigurasi Laravel
+`-- .htaccess                                         Blokir akses web ke file internal
+```
 
 ## 2. Persyaratan
 
@@ -73,10 +90,10 @@ Untuk demo, login sebagai admin lalu buka menu **Layanan** dan **Barbers**. Coba
 
 ## 5. Menjalankan backend Laravel — Week 7
 
-Website PHP Native dan Laravel API menggunakan database MySQL yang sama (`barz_booking`). Laravel berjalan sebagai server API terpisah. Sebelum menjalankan Composer dan Artisan, pastikan `php -v` menunjukkan PHP 8.2 atau lebih baru. Jika perlu, ikuti pengaturan PATH pada [`api-server/README.md`](api-server/README.md).
+Website PHP Native dan Laravel API menggunakan database MySQL yang sama (`barz_booking`). Laravel berada di folder yang sama dengan website (`app/`, `routes/`, `bootstrap/`, `config/`) dan dijalankan sebagai server API terpisah dengan `php artisan serve`. Sebelum menjalankan Composer dan Artisan, pastikan `php -v` menunjukkan PHP 8.2 atau lebih baru. Jika perlu, ikuti pengaturan PATH pada [`docs/LARAVEL_API.md`](docs/LARAVEL_API.md).
 
 ```powershell
-cd C:\xampp\htdocs\Barz\api-server
+cd C:\xampp\htdocs\Barz
 composer install
 Copy-Item .env.example .env
 php artisan key:generate
@@ -90,7 +107,7 @@ Sesuaikan `.env` dengan database MySQL XAMPP. Setelah server berjalan, periksa:
 
 `http://127.0.0.1:8000/api/health`
 
-Import collection `api-server/docs/Barz-API.postman_collection.json` ke Postman. Collection tersebut berisi request untuk health check, layanan, slot, login, JWT, booking, dan operasi admin.
+Import collection `docs/Barz-API.postman_collection.json` ke Postman. Collection tersebut berisi request untuk health check, layanan, slot, login, JWT, booking, dan operasi admin.
 
 Pada database baru, akun demo yang dibuat oleh seeder:
 

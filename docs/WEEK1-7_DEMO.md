@@ -19,10 +19,10 @@ Panduan ini membantu menyiapkan demonstrasi source code dan hasil aplikasi. Tunj
 | 1 | HTML | `customer/pages/home.php`, `customer/pages/booking.php` | Homepage dan form booking. Jelaskan elemen, atribut, form, input, tombol, dan struktur halaman. |
 | 2 | CSS | `src/css/tailwind.css`, `assets/css/tailwind.css` | Tunjukkan theme token, utility class, breakpoint responsive, hover/focus, lalu ubah lebar browser. |
 | 3 | JavaScript | `assets/js/main.js`, `assets/js/api.js`, script pada halaman booking | Tunjukkan event listener, DOM, validasi form, async/await, loading state, dan perubahan pilihan slot. |
-| 4 | API | `assets/js/api.js`, `api/get_slots.php`, `api-server/routes/api.php` | Tunjukkan request Fetch, method HTTP, JSON, status response, fallback, dan pengujian Postman. |
+| 4 | API | `assets/js/api.js`, `api/get_slots.php`, `routes/api.php` | Tunjukkan request Fetch, method HTTP, JSON, status response, fallback, dan pengujian Postman. |
 | 5 | PHP + MySQL Native | `includes/init.php`, `includes/functions.php`, `auth/`, `customer/pages/booking.php`, `admin/` | Tunjukkan session, koneksi MySQLi, prepared statement, validasi, dan proses booking. Periksa hasil di phpMyAdmin. |
 | 6 | OOP + MVC Manual | `admin/services.php`, `admin/barbers.php`, `php-native/models/`, `php-native/controllers/Admin/`, `php-native/views/Admin/` | Tunjukkan tambah/edit/cari/status/hapus layanan dan barber. Jelaskan Class, Object, Constructor, Encapsulation, Model, Controller, dan View. |
-| 7 | Laravel MVC | `api-server/routes/api.php`, `api-server/app/Http/Controllers/Api/`, `api-server/app/Models/`, `api-server/app/Http/Resources/` | Jalankan Laravel API, lalu uji health, login/token, layanan, slot, booking, dan logout melalui Postman. |
+| 7 | Laravel MVC | `routes/api.php`, `app/Http/Controllers/Api/`, `app/Models/`, `app/Http/Resources/` | Jalankan Laravel API, lalu uji health, login/token, layanan, slot, booking, dan logout melalui Postman. |
 
 ## Week 6 — urutan demo OOP + MVC Manual
 
@@ -60,7 +60,7 @@ Contoh ketika admin menambah layanan:
 
 ## Week 7 — urutan demo Laravel MVC
 
-1. Jalankan backend dari folder `api-server`.
+1. Jalankan backend dari folder root `Barz` dengan `php artisan serve --host=127.0.0.1 --port=8000`.
 2. Tunjukkan `routes/api.php` untuk menjelaskan endpoint.
 3. Tunjukkan satu Controller, misalnya `BookingController.php`, untuk menjelaskan penerimaan request, validasi, dan alur proses.
 4. Tunjukkan `Booking.php` atau `Service.php` pada `app/Models/` untuk menjelaskan Eloquent ORM dan relasi data.
@@ -73,6 +73,6 @@ Week 7 sudah memiliki source Laravel, tetapi jangan menyatakan runtime berhasil 
 ## Catatan agar penjelasan tidak tertukar
 
 - Week 5 adalah PHP Native + MySQLi yang digunakan oleh website utama.
-- Week 6 adalah OOP + MVC Manual PHP Native untuk Admin > Layanan dan Admin > Barbers. Kodenya berada di `php-native/`, bukan `api-server/app/`.
-- Week 7 adalah Laravel MVC untuk backend REST API di `api-server/`.
+- Week 6 adalah OOP + MVC Manual PHP Native untuk Admin > Layanan dan Admin > Barbers. Kodenya berada di `php-native/`, bukan `app/`.
+- Week 7 adalah Laravel MVC untuk backend REST API (`routes/api.php` dan `app/`).
 - Tidak semua halaman Admin lama sudah dipindahkan ke MVC Manual. Untuk Week 6, jelaskan dua fitur yang memang sudah memakai pola tersebut.

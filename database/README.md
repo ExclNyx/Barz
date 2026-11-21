@@ -8,7 +8,7 @@ Barz menggunakan MySQL dengan database bernama `barz_booking`.
 2. Buka phpMyAdmin.
 3. Buat/import database melalui file `schema.sql`.
 4. Pastikan konfigurasi di `includes/init.php` sesuai dengan MySQL lokal.
-5. Backend Laravel di `api-server/` memakai database yang sama melalui file `.env` miliknya.
+5. Backend Laravel (folder `app/` dan `routes/` di root project) memakai database yang sama melalui file `.env`.
 
 ## Struktur inti
 
